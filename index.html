@@ -3,745 +3,557 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LETHE // WORLD TERMINAL</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<title>TERMINAL: NEO-CITY LETHE</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #03030e;
-  --bg2: #07071c;
-  --cyan: #00ffe7;
-  --cyan-dim: rgba(0,255,231,0.12);
-  --magenta: #ff2d7a;
-  --mag-dim: rgba(255,45,122,0.12);
-  --gold: #ffc044;
-  --red: #ff3352;
-  --green: #00ffaa;
-  --text: #b8c8e8;
-  --muted: #445066;
-  --mono: 'Share Tech Mono', monospace;
-  --orb: 'Orbitron', sans-serif;
-  --kr: 'Noto Sans KR', sans-serif;
+  --bg:#02020a; --bg2:#07071a; --cyan:#00ffe7; --magenta:#ff00a8;
+  --gold:#ffc740; --red:#ff2a4a; --green:#00ffaa;
+  --text:#ccd6f6; --muted:#556080; --glass:rgba(0,255,231,0.03);
+  --ease:cubic-bezier(.4,0,.2,1);
+  --mono:'Space Mono',monospace; --orb:'Orbitron',sans-serif; --kr:'Noto Sans KR',sans-serif;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--kr);
-  font-weight: 300;
-  overflow-x: hidden;
-  cursor: crosshair;
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background-color:var(--bg);color:var(--text);font-family:var(--kr);font-weight:300;line-height:1.8;overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.07) 3px,rgba(0,0,0,0.07) 4px)}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:rgba(0,255,231,.3)}
 
-/* scanlines */
-body::after {
-  content:""; position:fixed; inset:0; pointer-events:none; z-index:9999;
-  background: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px);
-}
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg-glow::before{content:"";position:absolute;width:800px;height:800px;top:-200px;left:-200px;background:radial-gradient(circle,rgba(0,255,231,0.04) 0%,transparent 70%);animation:floatGlow 12s ease-in-out infinite alternate}
+.bg-glow::after{content:"";position:absolute;width:600px;height:600px;bottom:10%;right:-100px;background:radial-gradient(circle,rgba(255,0,168,0.05) 0%,transparent 70%);animation:floatGlow 9s ease-in-out infinite alternate-reverse}
+@keyframes floatGlow{from{transform:translate(0,0)}to{transform:translate(40px,60px)}}
 
-/* custom scrollbar */
-::-webkit-scrollbar { width:4px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--cyan); opacity:.3; }
+.wrap{position:relative;z-index:1;max-width:1160px;margin:0 auto;padding:0 32px}
+.divider{width:100%;height:1px;background:linear-gradient(to right,transparent,rgba(0,255,231,.18),transparent)}
 
-/* ─── NAV ─── */
-nav {
-  position: fixed; top:0; left:0; right:0; z-index:100;
-  display:flex; align-items:center; justify-content:space-between;
-  padding: 16px 40px;
-  background: linear-gradient(to bottom, rgba(3,3,14,0.98), transparent);
-  border-bottom: 1px solid rgba(0,255,231,0.08);
-}
-.nav-logo {
-  font-family: var(--orb); font-size:1rem; font-weight:900;
-  letter-spacing:.3em; color:#fff;
-  text-shadow: 0 0 20px rgba(0,255,231,0.4);
-}
-.nav-tabs { display:flex; gap:4px; }
-.nav-tab {
-  font-family: var(--mono); font-size:.65rem; letter-spacing:.15em;
-  padding: 8px 20px; border:1px solid transparent;
-  background:none; color:var(--muted); cursor:pointer;
-  transition: all .25s;
-}
-.nav-tab:hover { color:var(--cyan); border-color:rgba(0,255,231,0.2); }
-.nav-tab.active { color:var(--cyan); border-color:var(--cyan); background:rgba(0,255,231,0.05); }
+/* HEADER */
+header{position:relative;padding:120px 32px 100px;text-align:center;overflow:hidden;background:radial-gradient(circle,rgba(0,243,255,0.04) 0%,transparent 60%)}
+.header-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,255,231,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,231,.05) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%)}
+.terminal-id{font-family:var(--mono);font-size:.7rem;letter-spacing:5px;color:var(--cyan);margin-bottom:24px;opacity:.7}
+.terminal-id::before{content:"▶ "}
+h1{font-family:var(--orb);font-size:clamp(4.5rem,16vw,9rem);font-weight:900;letter-spacing:.18em;line-height:1;color:#fff;position:relative}
+.glitch-wrap{position:relative;display:inline-block}
+.glitch-wrap::before,.glitch-wrap::after{content:attr(data-text);position:absolute;inset:0;font-family:inherit;font-size:inherit;font-weight:inherit;letter-spacing:inherit}
+.glitch-wrap::before{color:var(--cyan);text-shadow:-2px 0 var(--cyan);clip-path:polygon(0 30%,100% 30%,100% 50%,0 50%);animation:glitch1 4s infinite}
+.glitch-wrap::after{color:var(--magenta);text-shadow:2px 0 var(--magenta);clip-path:polygon(0 60%,100% 60%,100% 75%,0 75%);animation:glitch2 4s infinite}
+@keyframes glitch1{0%,90%,100%{transform:translate(0);opacity:0}91%{transform:translate(-3px,1px);opacity:.8}93%{transform:translate(3px,-1px);opacity:.8}95%{transform:translate(0);opacity:0}}
+@keyframes glitch2{0%,92%,100%{transform:translate(0);opacity:0}93%{transform:translate(3px,2px);opacity:.6}95%{transform:translate(-3px,-2px);opacity:.6}97%{transform:translate(0);opacity:0}}
+.header-sub{margin-top:20px;font-family:var(--mono);font-size:.75rem;letter-spacing:8px;color:var(--muted)}
+.header-line{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:48px}
+.header-line span{width:80px;height:1px;background:linear-gradient(to right,transparent,var(--cyan))}
+.header-line span:last-child{background:linear-gradient(to left,transparent,var(--cyan))}
+.header-line .dot{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* ─── SECTIONS ─── */
-.page { display:none; min-height:100vh; padding-top:80px; }
-.page.active { display:block; }
+/* SECTION COMMON */
+.section-wrap{padding:100px 0}
+.section-label{font-family:var(--mono);font-size:.65rem;letter-spacing:5px;color:var(--cyan);opacity:.6;margin-bottom:10px}
+h2{font-family:var(--orb);font-size:clamp(1.1rem,3vw,1.5rem);font-weight:700;color:#fff;margin-bottom:60px;display:flex;align-items:center;gap:20px}
+h2 .h2-num{color:var(--cyan);font-size:.85em;opacity:.6}
+h2::after{content:"";flex:1;height:1px;background:linear-gradient(to right,rgba(0,255,231,.3),transparent)}
 
-/* ─── BOOT SCREEN ─── */
-#boot {
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  min-height:100vh; padding:40px; text-align:center;
-  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,255,231,0.04) 0%, transparent 70%);
-}
-.boot-grid {
-  position:absolute; inset:0;
-  background-image: linear-gradient(rgba(0,255,231,0.04) 1px,transparent 1px), linear-gradient(90deg,rgba(0,255,231,0.04) 1px,transparent 1px);
-  background-size:80px 80px;
-  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent);
-  pointer-events:none;
-}
-.boot-pre {
-  font-family:var(--mono); font-size:.7rem; letter-spacing:.3em;
-  color:var(--cyan); opacity:.6; margin-bottom:30px;
-  animation: fadeIn 1s ease both;
-}
-.boot-title {
-  font-family:var(--orb); font-weight:900;
-  font-size: clamp(5rem,18vw,11rem); letter-spacing:.2em;
-  color:#fff; line-height:1;
-  text-shadow: 0 0 60px rgba(0,255,231,0.2), 0 0 120px rgba(0,255,231,0.05);
-  animation: fadeIn .6s ease .2s both;
-  position:relative;
-}
-.boot-title .glitch {
-  position:relative; display:inline-block;
-}
-.boot-title .glitch::before {
-  content:attr(data-t); position:absolute; inset:0;
-  color:var(--cyan); clip-path:polygon(0 25%,100% 25%,100% 45%,0 45%);
-  animation:g1 5s infinite; transform:translateX(-2px);
-}
-.boot-title .glitch::after {
-  content:attr(data-t); position:absolute; inset:0;
-  color:var(--magenta); clip-path:polygon(0 65%,100% 65%,100% 80%,0 80%);
-  animation:g2 5s infinite; transform:translateX(2px);
-}
-@keyframes g1 { 0%,88%,100%{opacity:0} 89%{opacity:.8;transform:translateX(-4px)} 92%{opacity:.8;transform:translateX(2px)} 94%{opacity:0} }
-@keyframes g2 { 0%,91%,100%{opacity:0} 92%{opacity:.7;transform:translateX(4px)} 95%{opacity:.7;transform:translateX(-2px)} 97%{opacity:0} }
-@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+/* IMG FRAME */
+.img-frame{position:relative;overflow:hidden}
+.img-frame img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(20%) contrast(110%) brightness(.85);transition:all .6s var(--ease)}
+.img-frame:hover img{filter:grayscale(0%) contrast(105%) brightness(.95);transform:scale(1.04)}
+.img-frame::before{content:"";position:absolute;top:0;left:0;width:20px;height:20px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan);z-index:2;pointer-events:none}
+.img-frame::after{content:"";position:absolute;bottom:0;right:0;width:20px;height:20px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan);z-index:2;pointer-events:none}
+.img-caption{position:absolute;bottom:0;left:0;right:0;padding:16px 20px;background:linear-gradient(transparent,rgba(2,2,10,.9));font-family:var(--mono);font-size:.65rem;letter-spacing:3px;color:var(--cyan);z-index:2}
 
-.boot-sub {
-  font-family:var(--mono); font-size:.75rem; letter-spacing:.5em;
-  color:var(--muted); margin-top:20px;
-  animation: fadeIn .6s ease .5s both;
-}
-.boot-btn {
-  margin-top:60px;
-  font-family:var(--mono); font-size:.8rem; letter-spacing:.25em;
-  padding:16px 50px; border:1px solid var(--cyan);
-  background: rgba(0,255,231,0.06); color:var(--cyan); cursor:pointer;
-  transition: all .3s; animation: fadeIn .6s ease .9s both;
-  position:relative; overflow:hidden;
-}
-.boot-btn::before {
-  content:""; position:absolute; inset:0;
-  background: var(--cyan); transform:translateX(-101%);
-  transition: transform .3s;
-}
-.boot-btn:hover::before { transform:translateX(0); }
-.boot-btn:hover { color:var(--bg); }
-.boot-btn span { position:relative; z-index:1; }
+/* 01 CHIP */
+.chip-layout{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.chip-main-img{height:500px}
+.chip-info{display:flex;flex-direction:column;background:var(--glass);border:1px solid rgba(0,255,231,.1);border-left:none;padding:60px 50px;justify-content:center}
+.chip-tag{font-family:var(--mono);font-size:.65rem;letter-spacing:4px;color:var(--gold);margin-bottom:20px}
+.chip-name{font-family:var(--orb);font-size:2.5rem;font-weight:900;color:var(--gold);text-shadow:0 0 30px rgba(255,199,64,.4);margin-bottom:30px;line-height:1.1}
+.chip-desc{font-size:1rem;color:var(--text);line-height:2}
+.chip-stat{margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(0,255,231,.1)}
+.chip-stat-item{background:var(--bg2);padding:20px}
+.chip-stat-item .stat-label{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--muted);margin-bottom:6px}
+.chip-stat-item .stat-val{font-family:var(--orb);font-size:.85rem;color:var(--cyan)}
 
-.boot-footer {
-  position:absolute; bottom:40px;
-  font-family:var(--mono); font-size:.6rem; letter-spacing:.2em;
-  color:var(--muted); opacity:.4;
-}
+/* 02 HW */
+.hw-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.hw-card{position:relative;background:var(--bg2);overflow:hidden}
+.hw-img{height:320px}
+.hw-card-body{padding:36px 36px 40px}
+.hw-badge{display:inline-block;font-family:var(--mono);font-size:.6rem;letter-spacing:3px;padding:5px 12px;margin-bottom:16px}
+.hw-badge.deep{background:rgba(255,0,168,.15);border:1px solid var(--magenta);color:var(--magenta)}
+.hw-badge.hyper{background:rgba(0,255,231,.1);border:1px solid var(--cyan);color:var(--cyan)}
+.hw-name{font-family:var(--orb);font-size:1.3rem;font-weight:700;margin-bottom:14px}
+.hw-name.deep{color:var(--magenta);text-shadow:0 0 20px rgba(255,0,168,.3)}
+.hw-name.hyper{color:var(--cyan);text-shadow:0 0 20px rgba(0,255,231,.3)}
+.hw-desc{font-size:.9rem;color:var(--muted);line-height:1.9}
+.hw-card::before{content:"";position:absolute;bottom:0;left:0;right:0;height:3px}
+.hw-card.deep-card::before{background:var(--magenta);box-shadow:0 -4px 20px rgba(255,0,168,.4)}
+.hw-card.hyper-card::before{background:var(--cyan);box-shadow:0 -4px 20px rgba(0,255,231,.3)}
 
-/* ─── MAP PAGE ─── */
-#map-page {
-  display:none;
-  padding: 80px 0 0;
-}
-#map-page.active { display:block; }
+/* 03 DEALER */
+.dealer-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.dealer-card{padding:50px 44px;position:relative;overflow:hidden}
+.dealer-card.official{background:linear-gradient(135deg,rgba(0,255,170,.04) 0%,var(--bg2) 100%);border-left:3px solid var(--green)}
+.dealer-card.unofficial{background:linear-gradient(135deg,rgba(255,42,74,.05) 0%,var(--bg2) 100%);border-left:3px solid var(--red)}
+.dealer-card::before{content:attr(data-num);position:absolute;top:30px;right:36px;font-family:var(--orb);font-size:5rem;font-weight:900;opacity:.04;line-height:1}
+.dealer-status{font-family:var(--mono);font-size:.6rem;letter-spacing:4px;margin-bottom:20px}
+.dealer-card.official .dealer-status{color:var(--green)}
+.dealer-card.unofficial .dealer-status{color:var(--red)}
+.dealer-title{font-family:var(--orb);font-size:1.2rem;font-weight:700;margin-bottom:20px}
+.dealer-card.official .dealer-title{color:var(--green)}
+.dealer-card.unofficial .dealer-title{color:var(--red)}
+.dealer-desc{font-size:.95rem;color:var(--text);line-height:2}
+.dealer-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.dealer-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;padding:5px 12px;border:1px solid}
+.dealer-card.official .dealer-tag{border-color:rgba(0,255,170,.3);color:rgba(0,255,170,.6)}
+.dealer-card.unofficial .dealer-tag{border-color:rgba(255,42,74,.3);color:rgba(255,42,74,.6)}
 
-.map-wrap {
-  display:grid;
-  grid-template-columns: 1fr 400px;
-  height: calc(100vh - 80px);
-  overflow:hidden;
-}
+/* 04 MAP ENTRY */
+.map-entry-section{padding:120px 32px;background:linear-gradient(to bottom,var(--bg2),var(--bg));text-align:center;position:relative;overflow:hidden}
+.map-entry-section::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(0,255,231,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,231,.03) 1px,transparent 1px);background-size:50px 50px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black,transparent);pointer-events:none}
+.map-entry-label{font-family:var(--mono);font-size:.65rem;letter-spacing:5px;color:var(--cyan);opacity:.6;margin-bottom:16px}
+.map-entry-title{font-family:var(--orb);font-size:clamp(1.8rem,5vw,3rem);font-weight:900;color:#fff;margin-bottom:16px;letter-spacing:.1em}
+.map-entry-sub{font-size:.95rem;color:var(--muted);max-width:520px;margin:0 auto 50px;line-height:2}
+.map-entry-btn{display:inline-flex;align-items:center;gap:14px;font-family:var(--mono);font-size:.8rem;letter-spacing:.2em;padding:18px 54px;border:1px solid var(--cyan);background:rgba(0,255,231,.06);color:var(--cyan);cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.map-entry-btn::before{content:"";position:absolute;inset:0;background:var(--cyan);transform:translateX(-101%);transition:transform .3s}
+.map-entry-btn:hover::before{transform:translateX(0)}
+.map-entry-btn:hover{color:var(--bg)}
+.map-entry-btn span{position:relative;z-index:1}
+.map-entry-preview{margin:60px auto 0;max-width:700px;height:240px;position:relative;overflow:hidden;border:1px solid rgba(0,255,231,.1);opacity:.45;transition:opacity .4s;pointer-events:none}
+.map-entry-preview:hover{opacity:.75}
 
-/* SVG MAP */
-.map-canvas {
-  position:relative;
-  background: radial-gradient(ellipse 80% 80% at 40% 40%, rgba(0,255,231,0.03) 0%, transparent 60%);
-  overflow:hidden;
-  border-right:1px solid rgba(0,255,231,0.08);
-}
-.map-canvas svg { width:100%; height:100%; }
+/* MAP OVERLAY */
+#map-overlay{position:fixed;inset:0;z-index:500;background:var(--bg);display:none;flex-direction:column;opacity:0;transition:opacity .4s var(--ease)}
+#map-overlay.open{display:flex}
+#map-overlay.visible{opacity:1}
+.map-topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid rgba(0,255,231,.1);background:rgba(2,2,10,.98);flex-shrink:0;z-index:10}
+.map-topbar-left{display:flex;align-items:center;gap:20px}
+.map-back-btn{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;color:var(--cyan);cursor:pointer;background:none;border:1px solid rgba(0,255,231,.25);padding:8px 18px;transition:all .25s}
+.map-back-btn:hover{background:rgba(0,255,231,.08);border-color:var(--cyan)}
+.map-topbar-title{font-family:var(--orb);font-size:.8rem;font-weight:700;letter-spacing:.2em;color:#fff}
+.map-topbar-status{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--muted)}
+.map-body{display:grid;grid-template-columns:1fr 400px;flex:1;overflow:hidden}
+.map-canvas{position:relative;overflow:hidden;background:radial-gradient(ellipse 80% 80% at 40% 40%,rgba(0,255,231,.03) 0%,transparent 60%);border-right:1px solid rgba(0,255,231,.08)}
+.map-canvas svg{width:100%;height:100%}
+.map-bg-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,255,231,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,231,.03) 1px,transparent 1px);background-size:40px 40px}
+.zone{cursor:pointer}
+.zone .zone-fill{transition:fill-opacity .3s}
+.zone:hover .zone-fill,.zone.active .zone-fill{fill-opacity:.22!important}
+.zone .zone-label{font-family:var(--orb);font-size:11px;font-weight:700;letter-spacing:.15em;pointer-events:none;transition:fill .3s}
+.zone:hover .zone-label,.zone.active .zone-label{fill:#fff!important}
+.zone .zone-sub{font-family:var(--mono);font-size:8px;letter-spacing:.1em;pointer-events:none;opacity:.5}
+.zone.active .zone-sub{opacity:.8}
+.loc-dot{cursor:pointer}
+.loc-dot circle.dot-main{transition:r .2s}
+.loc-dot:hover circle.dot-main{r:8}
+.loc-dot.active circle.dot-main{r:9}
+.conn-line{stroke-dasharray:4 4;animation:dashMove 2s linear infinite}
+@keyframes dashMove{to{stroke-dashoffset:-16}}
+.map-panel{display:flex;flex-direction:column;background:var(--bg2);overflow:hidden;position:relative}
+.panel-header{padding:24px 28px;border-bottom:1px solid rgba(0,255,231,.08);flex-shrink:0}
+.panel-zone-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.3em;margin-bottom:8px}
+.panel-zone-name{font-family:var(--orb);font-size:1.3rem;font-weight:900;color:#fff}
+.panel-zone-desc{font-size:.8rem;color:var(--muted);margin-top:8px;line-height:1.7}
+.panel-locs{flex:1;overflow-y:auto;padding:16px}
+.loc-item{padding:16px 20px;margin-bottom:6px;border:1px solid rgba(255,255,255,.04);background:rgba(255,255,255,.01);cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.loc-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;transition:width .25s}
+.loc-item:hover{border-color:rgba(0,255,231,.2)}
+.loc-item:hover::before,.loc-item.selected::before{width:2px}
+.loc-item.selected{border-color:rgba(0,255,231,.35);background:rgba(0,255,231,.04)}
+.loc-s88 .loc-item::before{background:var(--gold)}
+.loc-core .loc-item::before{background:var(--cyan)}
+.loc-item-name{font-family:var(--orb);font-size:.75rem;font-weight:700;margin-bottom:4px}
+.loc-s88 .loc-item-name{color:var(--gold)}
+.loc-core .loc-item-name{color:var(--cyan)}
+.loc-item-sub{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.1em}
+.panel-default{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:40px}
+.panel-default .pd-icon{font-size:2rem;margin-bottom:20px;opacity:.12}
+.panel-default p{font-family:var(--mono);font-size:.7rem;letter-spacing:.15em;color:var(--muted);line-height:2}
+.loc-detail{position:absolute;inset:0;background:var(--bg2);transform:translateX(100%);transition:transform .4s var(--ease);overflow-y:auto;z-index:10}
+.loc-detail.open{transform:translateX(0)}
+.detail-header{padding:18px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,255,231,.08)}
+.detail-back-btn{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--muted);cursor:pointer;background:none;border:1px solid rgba(255,255,255,.08);padding:7px 14px;transition:all .2s}
+.detail-back-btn:hover{color:var(--cyan);border-color:rgba(0,255,231,.3)}
+.detail-zone-tag{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;color:var(--muted)}
+.detail-img{width:100%;height:190px;object-fit:cover;filter:grayscale(15%) contrast(110%) brightness(.8);display:block}
+.detail-body{padding:22px 24px 30px}
+.detail-index{font-family:var(--mono);font-size:.58rem;letter-spacing:.3em;opacity:.35;margin-bottom:6px}
+.detail-name{font-family:var(--orb);font-size:1rem;font-weight:900;color:#fff;margin-bottom:14px;line-height:1.35}
+.detail-desc{font-size:.85rem;color:var(--text);line-height:2}
+.detail-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.detail-tag{font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;padding:4px 10px;border:1px solid;opacity:.7}
 
-.map-bg-grid {
-  position:absolute; inset:0;
-  background-image:
-    linear-gradient(rgba(0,255,231,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,255,231,0.03) 1px,transparent 1px);
-  background-size:40px 40px;
-  pointer-events:none;
-}
+/* 05 DIVE */
+.dive-section{background:linear-gradient(to bottom,var(--bg2),var(--bg))}
+.dive-wrap{max-width:1100px;margin:0 auto;padding:100px 40px}
+.dive-head{text-align:center;margin-bottom:80px}
+.dive-head-pre{font-family:var(--mono);font-size:.65rem;letter-spacing:.4em;color:var(--cyan);opacity:.6;margin-bottom:16px}
+.dive-head-title{font-family:var(--orb);font-size:clamp(2rem,6vw,3.5rem);font-weight:900;color:#fff;text-shadow:0 0 40px rgba(0,255,231,.2);margin-bottom:16px}
+.dive-head-sub{font-size:.9rem;color:var(--muted);line-height:1.9;max-width:500px;margin:0 auto}
+.stage-nav{display:flex;gap:0;margin-bottom:60px;position:relative}
+.stage-nav::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:rgba(0,255,231,.1)}
+.stage-tab{flex:1;padding:20px 16px;text-align:center;font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;background:none;transition:all .3s;position:relative;z-index:1}
+.stage-tab:hover{color:var(--text)}
+.stage-tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.stage-tab .tab-num{font-family:var(--orb);font-size:1.2rem;font-weight:900;display:block;margin-bottom:6px;opacity:.3;transition:opacity .3s}
+.stage-tab.active .tab-num{opacity:1;color:var(--cyan)}
+.stage-tab .tab-label{display:block}
+.stage-content{display:none}
+.stage-content.active{display:block;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.stage-layout{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.stage-visual{position:relative;background:var(--bg2);overflow:hidden;min-height:420px}
+.stage-anim{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.anim-scan{position:relative;width:100%;height:100%;overflow:hidden}
+.scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,rgba(0,255,231,.6),transparent);animation:scanMove 3s ease-in-out infinite}
+@keyframes scanMove{0%{top:-10%}100%{top:110%}}
+.scan-frame{position:absolute;inset:30px;border:1px solid rgba(0,255,231,.15)}
+.scan-frame::before{content:"";position:absolute;top:-1px;left:-1px;width:16px;height:16px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan)}
+.scan-frame::after{content:"";position:absolute;bottom:-1px;right:-1px;width:16px;height:16px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan)}
+.scan-reels{position:absolute;inset:60px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;opacity:.25}
+.scan-reel{background:rgba(0,255,231,.08);border:1px solid rgba(0,255,231,.1);animation:flickerReel 2s infinite}
+.scan-reel:nth-child(2){animation-delay:.3s}.scan-reel:nth-child(3){animation-delay:.6s}
+.scan-reel:nth-child(4){animation-delay:.1s}.scan-reel:nth-child(5){animation-delay:.5s}.scan-reel:nth-child(6){animation-delay:.8s}
+@keyframes flickerReel{0%,100%{opacity:.25}50%{opacity:.6}}
+.scan-label{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--cyan);opacity:.5;white-space:nowrap}
+.anim-resonance{position:relative;width:100%;height:100%;overflow:hidden}
+.res-ring{position:absolute;top:50%;left:50%;border-radius:50%;border:1px solid;transform:translate(-50%,-50%);animation:resExpand 2.5s ease-out infinite}
+.res-ring:nth-child(1){width:80px;height:80px;border-color:rgba(0,255,231,.6)}
+.res-ring:nth-child(2){width:80px;height:80px;border-color:rgba(0,255,231,.4);animation-delay:.6s}
+.res-ring:nth-child(3){width:80px;height:80px;border-color:rgba(0,255,231,.2);animation-delay:1.2s}
+.res-ring:nth-child(4){width:80px;height:80px;border-color:rgba(255,0,168,.3);animation-delay:1.8s}
+@keyframes resExpand{0%{width:40px;height:40px;opacity:1}100%{width:320px;height:320px;opacity:0}}
+.res-core{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:12px;height:12px;background:var(--cyan);border-radius:50%;box-shadow:0 0 20px var(--cyan);animation:resPulse 1.2s infinite}
+@keyframes resPulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.4)}}
+.res-noise{position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 8px,rgba(255,0,168,.02) 8px,rgba(255,0,168,.02) 9px);animation:noiseShift 1s steps(1) infinite}
+@keyframes noiseShift{0%{background-position:0 0}25%{background-position:2px 2px}50%{background-position:-2px 1px}75%{background-position:1px -2px}}
+.res-label{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--magenta);opacity:.6;white-space:nowrap}
+.stage-info{background:rgba(7,7,28,.97);padding:50px 44px;display:flex;flex-direction:column;justify-content:center}
+.stage-num{font-family:var(--orb);font-size:4rem;font-weight:900;line-height:1;margin-bottom:6px;opacity:.06}
+.stage-badge{display:inline-block;font-family:var(--mono);font-size:.6rem;letter-spacing:.25em;padding:5px 14px;margin-bottom:20px;border:1px solid}
+.stage-badge.s1{color:var(--cyan);border-color:var(--cyan);background:rgba(0,255,231,.06)}
+.stage-badge.s2{color:var(--magenta);border-color:var(--magenta);background:rgba(255,0,168,.06)}
+.stage-title{font-family:var(--orb);font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:20px}
+.stage-desc{font-size:.9rem;color:var(--text);line-height:2.1;margin-bottom:30px}
+.stage-warn{padding:14px 18px;background:rgba(255,51,82,.07);border-left:3px solid var(--red);font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;color:var(--red);line-height:1.8}
+.ops-section{margin-top:70px}
+.ops-title{font-family:var(--orb);font-size:1rem;font-weight:700;color:var(--text);letter-spacing:.1em;margin-bottom:24px;display:flex;align-items:center;gap:16px}
+.ops-title::after{content:"";flex:1;height:1px;background:rgba(0,255,231,.1)}
+.ops-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.ops-card{padding:30px 28px;background:var(--bg2);border:1px solid rgba(255,255,255,.04);position:relative;overflow:hidden;cursor:pointer;transition:all .3s}
+.ops-card::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,255,231,.04),transparent);opacity:0;transition:opacity .3s}
+.ops-card:hover{border-color:rgba(0,255,231,.2)}
+.ops-card:hover::after{opacity:1}
+.ops-card-icon{font-size:1.4rem;margin-bottom:16px;opacity:.6}
+.ops-card-name{font-family:var(--orb);font-size:.75rem;font-weight:700;color:var(--cyan);margin-bottom:10px;letter-spacing:.05em}
+.ops-card-desc{font-size:.82rem;color:var(--muted);line-height:1.9}
+.ops-card-warn{margin-top:14px;font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;color:var(--red);opacity:.7}
+.ops-card-badge{position:absolute;top:16px;right:16px;font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;padding:3px 8px;border:1px solid rgba(255,51,82,.4);color:rgba(255,51,82,.6);background:rgba(255,51,82,.05)}
+.ops-popup-overlay{position:fixed;inset:0;background:rgba(2,2,10,.88);backdrop-filter:blur(4px);z-index:600;display:none;align-items:center;justify-content:center}
+.ops-popup-overlay.open{display:flex}
+.ops-popup{background:var(--bg2);border:1px solid rgba(0,255,231,.2);max-width:560px;width:90%;animation:popIn .3s var(--ease)}
+@keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+.ops-popup-bar{background:rgba(0,255,231,.05);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,255,231,.1)}
+.ops-popup-bar-title{font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;color:var(--cyan)}
+.ops-close{font-family:var(--mono);font-size:.8rem;color:var(--muted);cursor:pointer;background:none;border:none;transition:color .2s}
+.ops-close:hover{color:#fff}
+.ops-popup-body{padding:36px}
+.ops-popup-title{font-family:var(--orb);font-size:1.3rem;font-weight:900;color:#fff;margin-bottom:20px}
+.ops-popup-desc{font-size:.9rem;color:var(--text);line-height:2.1}
+.ops-popup-steps{margin-top:24px}
+.ops-popup-step{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.ops-popup-step:last-child{border-bottom:none}
+.step-num{font-family:var(--mono);font-size:.7rem;color:var(--cyan);opacity:.5;flex-shrink:0;padding-top:2px}
+.step-text{font-size:.85rem;color:var(--muted);line-height:1.9}
+.ops-popup-alert{margin-top:20px;padding:14px 18px;background:rgba(255,51,82,.07);border-left:3px solid var(--red);font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;color:var(--red);line-height:1.8}
 
-/* zone styles */
-.zone {
-  cursor:pointer;
-  transition: all .3s;
-}
-.zone .zone-fill {
-  transition: all .3s;
-}
-.zone:hover .zone-fill, .zone.active .zone-fill {
-  fill-opacity: 0.25 !important;
-}
-.zone .zone-label {
-  font-family: var(--orb); font-size:11px; font-weight:700;
-  letter-spacing:.15em; pointer-events:none;
-  transition: all .3s;
-}
-.zone:hover .zone-label, .zone.active .zone-label {
-  fill: #fff !important;
-}
-.zone .zone-sub {
-  font-family: var(--mono); font-size:8px; letter-spacing:.1em;
-  pointer-events:none; opacity:.5;
-}
-.zone.active .zone-sub { opacity:.8; }
+footer{text-align:center;padding:80px 32px 100px;position:relative;z-index:1}
+.footer-logo{font-family:var(--orb);font-size:.7rem;letter-spacing:10px;color:var(--muted);margin-bottom:16px}
+.footer-line{width:60px;height:1px;background:var(--cyan);margin:20px auto;opacity:.3}
+.footer-copy{font-family:var(--mono);font-size:.65rem;color:rgba(85,96,128,.4);letter-spacing:2px}
 
-/* location dots */
-.loc-dot {
-  cursor:pointer;
-  transition: all .3s;
-}
-.loc-dot circle {
-  transition: all .3s;
-}
-.loc-dot:hover circle.dot-main {
-  r:7;
-}
-.loc-dot.active circle.dot-main {
-  r:8;
-}
-.loc-dot .dot-label {
-  font-family:var(--kr); font-size:9px;
-  pointer-events:none;
-}
-
-/* connection lines */
-.conn-line {
-  stroke-dasharray:4 4;
-  animation: dashMove 2s linear infinite;
-}
-@keyframes dashMove { to { stroke-dashoffset:-16; } }
-
-/* PANEL */
-.map-panel {
-  display:flex; flex-direction:column;
-  background: var(--bg2);
-  overflow:hidden;
-}
-
-.panel-header {
-  padding:24px 28px;
-  border-bottom:1px solid rgba(0,255,231,0.08);
-  flex-shrink:0;
-}
-.panel-zone-tag {
-  font-family:var(--mono); font-size:.6rem; letter-spacing:.3em;
-  margin-bottom:8px;
-}
-.panel-zone-name {
-  font-family:var(--orb); font-size:1.3rem; font-weight:900;
-  color:#fff;
-}
-.panel-zone-desc {
-  font-size:.8rem; color:var(--muted); margin-top:8px; line-height:1.7;
-}
-
-.panel-locs {
-  flex:1; overflow-y:auto; padding:16px;
-}
-
-.loc-item {
-  padding:16px 20px; margin-bottom:6px;
-  border:1px solid rgba(255,255,255,0.04);
-  background:rgba(255,255,255,0.01);
-  cursor:pointer; transition:all .25s;
-  position:relative; overflow:hidden;
-}
-.loc-item::before {
-  content:""; position:absolute; left:0; top:0; bottom:0; width:0;
-  transition:width .25s;
-}
-.loc-item:hover { border-color:rgba(0,255,231,0.2); }
-.loc-item:hover::before { width:2px; }
-.loc-item.selected { border-color:rgba(0,255,231,0.35); background:rgba(0,255,231,0.04); }
-.loc-item.selected::before { width:2px; }
-.loc-sector88 .loc-item::before { background:var(--gold); }
-.loc-core .loc-item::before { background:var(--cyan); }
-.loc-item-name {
-  font-family:var(--orb); font-size:.75rem; font-weight:700;
-  margin-bottom:4px;
-}
-.loc-sector88 .loc-item-name { color:var(--gold); }
-.loc-core .loc-item-name { color:var(--cyan); }
-.loc-item-sub { font-family:var(--mono); font-size:.6rem; color:var(--muted); letter-spacing:.1em; }
-
-/* detail modal overlay */
-.loc-detail {
-  position:absolute; inset:0;
-  background:var(--bg);
-  transform:translateX(100%);
-  transition:transform .4s cubic-bezier(.4,0,.2,1);
-  overflow-y:auto;
-  z-index:10;
-}
-.loc-detail.open { transform:translateX(0); }
-.detail-header {
-  padding:24px 28px 0;
-  display:flex; align-items:flex-start; justify-content:space-between;
-}
-.detail-back {
-  font-family:var(--mono); font-size:.65rem; letter-spacing:.15em;
-  color:var(--muted); cursor:pointer; background:none; border:none;
-  transition:color .2s; padding:0;
-}
-.detail-back:hover { color:var(--cyan); }
-.detail-img {
-  width:100%; height:200px; object-fit:cover;
-  filter: grayscale(20%) contrast(110%) brightness(.8);
-  margin-top:20px; display:block;
-}
-.detail-body { padding:24px 28px; }
-.detail-index { font-family:var(--mono); font-size:.6rem; letter-spacing:.3em; opacity:.4; margin-bottom:8px; }
-.detail-name { font-family:var(--orb); font-size:1.1rem; font-weight:900; color:#fff; margin-bottom:16px; line-height:1.3; }
-.detail-desc { font-size:.88rem; color:var(--text); line-height:2; }
-.detail-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:20px; }
-.detail-tag {
-  font-family:var(--mono); font-size:.58rem; letter-spacing:.1em;
-  padding:4px 10px; border:1px solid; opacity:.7;
-}
-
-/* panel default state */
-.panel-default {
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  height:100%; text-align:center; padding:40px;
-}
-.panel-default .pd-icon {
-  font-size:2rem; margin-bottom:20px; opacity:.15;
-}
-.panel-default p {
-  font-family:var(--mono); font-size:.7rem; letter-spacing:.15em;
-  color:var(--muted); line-height:2;
-}
-
-/* ─── DIVE PAGE ─── */
-#dive-page {
-  display:none;
-  padding:80px 0 0;
-  min-height:100vh;
-}
-#dive-page.active { display:block; }
-
-.dive-wrap {
-  max-width:1100px; margin:0 auto; padding:60px 40px;
-}
-.dive-head {
-  text-align:center; margin-bottom:80px;
-}
-.dive-head-pre {
-  font-family:var(--mono); font-size:.65rem; letter-spacing:.4em;
-  color:var(--cyan); opacity:.6; margin-bottom:16px;
-}
-.dive-head-title {
-  font-family:var(--orb); font-size:clamp(2rem,6vw,3.5rem);
-  font-weight:900; color:#fff;
-  text-shadow:0 0 40px rgba(0,255,231,0.2);
-  margin-bottom:16px;
-}
-.dive-head-sub {
-  font-size:.9rem; color:var(--muted); line-height:1.9; max-width:500px; margin:0 auto;
-}
-
-/* dive stage selector */
-.stage-nav {
-  display:flex; gap:0; margin-bottom:60px; position:relative;
-}
-.stage-nav::after {
-  content:""; position:absolute; bottom:0; left:0; right:0; height:1px;
-  background:rgba(0,255,231,0.1);
-}
-.stage-tab {
-  flex:1; padding:20px 16px; text-align:center;
-  font-family:var(--mono); font-size:.65rem; letter-spacing:.15em;
-  color:var(--muted); cursor:pointer; border-bottom:2px solid transparent;
-  background:none; transition:all .3s; position:relative; z-index:1;
-}
-.stage-tab:hover { color:var(--text); }
-.stage-tab.active { color:var(--cyan); border-bottom-color:var(--cyan); }
-.stage-tab .tab-num {
-  font-family:var(--orb); font-size:1.2rem; font-weight:900;
-  display:block; margin-bottom:6px; opacity:.3;
-  transition:opacity .3s;
-}
-.stage-tab.active .tab-num { opacity:1; color:var(--cyan); }
-.stage-tab .tab-label { display:block; }
-
-/* stage content */
-.stage-content { display:none; }
-.stage-content.active { display:block; animation:fadeIn .4s ease; }
-
-.stage-layout {
-  display:grid; grid-template-columns:1fr 1fr; gap:2px;
-}
-.stage-visual {
-  position:relative; background:var(--bg2); overflow:hidden;
-  min-height:440px;
-}
-.stage-anim {
-  position:absolute; inset:0;
-  display:flex; align-items:center; justify-content:center;
-}
-
-/* Stage 1 animation – film scan */
-.anim-scan {
-  position:relative; width:100%; height:100%;
-  overflow:hidden;
-}
-.scan-line {
-  position:absolute; left:0; right:0; height:2px;
-  background:linear-gradient(to right, transparent, rgba(0,255,231,0.6), transparent);
-  animation:scanMove 3s ease-in-out infinite;
-}
-@keyframes scanMove { 0%{top:-10%} 100%{top:110%} }
-.scan-frame {
-  position:absolute; inset:30px;
-  border:1px solid rgba(0,255,231,0.15);
-}
-.scan-frame::before, .scan-frame::after {
-  content:""; position:absolute; width:16px; height:16px;
-}
-.scan-frame::before { top:-1px;left:-1px; border-top:2px solid var(--cyan); border-left:2px solid var(--cyan); }
-.scan-frame::after { bottom:-1px;right:-1px; border-bottom:2px solid var(--cyan); border-right:2px solid var(--cyan); }
-.scan-reels {
-  position:absolute; inset:60px;
-  display:grid; grid-template-columns:repeat(3,1fr); gap:6px; opacity:.3;
-}
-.scan-reel {
-  background:rgba(0,255,231,0.08); border:1px solid rgba(0,255,231,0.1);
-  animation:flickerReel 2s infinite;
-}
-.scan-reel:nth-child(2) { animation-delay:.3s; }
-.scan-reel:nth-child(3) { animation-delay:.6s; }
-.scan-reel:nth-child(4) { animation-delay:.1s; }
-.scan-reel:nth-child(5) { animation-delay:.5s; }
-.scan-reel:nth-child(6) { animation-delay:.8s; }
-@keyframes flickerReel { 0%,100%{opacity:.3} 50%{opacity:.7} }
-.scan-label {
-  position:absolute; bottom:40px; left:50%; transform:translateX(-50%);
-  font-family:var(--mono); font-size:.6rem; letter-spacing:.2em; color:var(--cyan); opacity:.5;
-  white-space:nowrap;
-}
-
-/* Stage 2 animation – resonance waves */
-.anim-resonance {
-  position:relative; width:100%; height:100%; overflow:hidden;
-}
-.res-ring {
-  position:absolute; top:50%; left:50%;
-  border-radius:50%; border:1px solid;
-  transform:translate(-50%,-50%);
-  animation:resExpand 2.5s ease-out infinite;
-}
-.res-ring:nth-child(1) { width:80px;height:80px; border-color:rgba(0,255,231,0.6); }
-.res-ring:nth-child(2) { width:80px;height:80px; border-color:rgba(0,255,231,0.4); animation-delay:.6s; }
-.res-ring:nth-child(3) { width:80px;height:80px; border-color:rgba(0,255,231,0.2); animation-delay:1.2s; }
-.res-ring:nth-child(4) { width:80px;height:80px; border-color:rgba(255,45,122,0.3); animation-delay:1.8s; }
-@keyframes resExpand {
-  0%{width:40px;height:40px;opacity:1}
-  100%{width:320px;height:320px;opacity:0}
-}
-.res-core {
-  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-  width:12px; height:12px; background:var(--cyan);
-  border-radius:50%; box-shadow:0 0 20px var(--cyan);
-  animation:resPulse 1.2s infinite;
-}
-@keyframes resPulse { 0%,100%{transform:translate(-50%,-50%) scale(1)} 50%{transform:translate(-50%,-50%) scale(1.4)} }
-.res-noise {
-  position:absolute; inset:0;
-  background:repeating-linear-gradient(-45deg,transparent,transparent 8px,rgba(255,45,122,0.02) 8px,rgba(255,45,122,0.02) 9px);
-  animation:noiseShift 1s steps(1) infinite;
-}
-@keyframes noiseShift { 0%{background-position:0 0} 25%{background-position:2px 2px} 50%{background-position:-2px 1px} 75%{background-position:1px -2px} }
-.res-label {
-  position:absolute; bottom:40px; left:50%; transform:translateX(-50%);
-  font-family:var(--mono); font-size:.6rem; letter-spacing:.2em;
-  color:var(--magenta); opacity:.6; white-space:nowrap;
-}
-
-.stage-info {
-  background:rgba(7,7,28,.97); padding:50px 44px;
-  display:flex; flex-direction:column; justify-content:center;
-}
-.stage-num {
-  font-family:var(--orb); font-size:4rem; font-weight:900;
-  line-height:1; margin-bottom:6px; opacity:.07;
-}
-.stage-badge {
-  display:inline-block; font-family:var(--mono); font-size:.6rem; letter-spacing:.25em;
-  padding:5px 14px; margin-bottom:20px; border:1px solid;
-}
-.stage-badge.s1 { color:var(--cyan); border-color:var(--cyan); background:rgba(0,255,231,0.06); }
-.stage-badge.s2 { color:var(--magenta); border-color:var(--magenta); background:rgba(255,45,122,0.06); }
-.stage-title {
-  font-family:var(--orb); font-size:1.6rem; font-weight:900;
-  color:#fff; margin-bottom:20px;
-}
-.stage-desc { font-size:.9rem; color:var(--text); line-height:2.1; margin-bottom:30px; }
-.stage-warn {
-  padding:14px 18px; background:rgba(255,51,82,0.07);
-  border-left:3px solid var(--red);
-  font-family:var(--mono); font-size:.65rem; letter-spacing:.1em;
-  color:var(--red); line-height:1.8;
-}
-
-/* ops cards */
-.ops-section { margin-top:70px; }
-.ops-title {
-  font-family:var(--orb); font-size:1rem; font-weight:700;
-  color:var(--text); letter-spacing:.1em; margin-bottom:24px;
-  display:flex; align-items:center; gap:16px;
-}
-.ops-title::after { content:""; flex:1; height:1px; background:rgba(0,255,231,0.1); }
-.ops-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
-.ops-card {
-  padding:30px 28px; background:var(--bg2);
-  border:1px solid rgba(255,255,255,0.04);
-  position:relative; overflow:hidden; cursor:pointer;
-  transition:all .3s;
-}
-.ops-card::after {
-  content:""; position:absolute; inset:0;
-  background:linear-gradient(135deg, rgba(0,255,231,0.04), transparent);
-  opacity:0; transition:opacity .3s;
-}
-.ops-card:hover { border-color:rgba(0,255,231,0.2); }
-.ops-card:hover::after { opacity:1; }
-.ops-card-icon {
-  font-size:1.4rem; margin-bottom:16px; opacity:.6;
-}
-.ops-card-name {
-  font-family:var(--orb); font-size:.75rem; font-weight:700;
-  color:var(--cyan); margin-bottom:10px; letter-spacing:.05em;
-}
-.ops-card-desc { font-size:.82rem; color:var(--muted); line-height:1.9; }
-.ops-card-warn {
-  margin-top:14px; font-family:var(--mono); font-size:.58rem;
-  letter-spacing:.1em; color:var(--red); opacity:.7;
-}
-.ops-card-badge {
-  position:absolute; top:16px; right:16px;
-  font-family:var(--mono); font-size:.55rem; letter-spacing:.1em;
-  padding:3px 8px; border:1px solid rgba(255,51,82,0.4);
-  color:rgba(255,51,82,0.6); background:rgba(255,51,82,0.05);
-}
-
-/* ops detail popup */
-.ops-popup-overlay {
-  position:fixed; inset:0; background:rgba(3,3,14,.85);
-  backdrop-filter:blur(4px); z-index:200;
-  display:none; align-items:center; justify-content:center;
-}
-.ops-popup-overlay.open { display:flex; }
-.ops-popup {
-  background:var(--bg2); border:1px solid rgba(0,255,231,0.2);
-  max-width:560px; width:90%; position:relative;
-  animation:popIn .3s cubic-bezier(.4,0,.2,1);
-}
-@keyframes popIn { from{opacity:0;transform:scale(.95)} to{opacity:1;transform:none} }
-.ops-popup-bar {
-  background:rgba(0,255,231,0.05);
-  padding:14px 24px;
-  display:flex; align-items:center; justify-content:space-between;
-  border-bottom:1px solid rgba(0,255,231,0.1);
-}
-.ops-popup-bar-title { font-family:var(--mono); font-size:.65rem; letter-spacing:.2em; color:var(--cyan); }
-.ops-close {
-  font-family:var(--mono); font-size:.8rem; color:var(--muted);
-  cursor:pointer; background:none; border:none; transition:color .2s;
-}
-.ops-close:hover { color:#fff; }
-.ops-popup-body { padding:36px; }
-.ops-popup-title { font-family:var(--orb); font-size:1.3rem; font-weight:900; color:#fff; margin-bottom:20px; }
-.ops-popup-desc { font-size:.9rem; color:var(--text); line-height:2.1; }
-.ops-popup-steps { margin-top:24px; }
-.ops-popup-step {
-  display:flex; gap:16px; padding:14px 0;
-  border-bottom:1px solid rgba(255,255,255,0.04);
-}
-.ops-popup-step:last-child { border-bottom:none; }
-.step-num {
-  font-family:var(--mono); font-size:.7rem; color:var(--cyan);
-  opacity:.5; flex-shrink:0; padding-top:2px;
-}
-.step-text { font-size:.85rem; color:var(--muted); line-height:1.9; }
-.ops-popup-alert {
-  margin-top:20px; padding:14px 18px;
-  background:rgba(255,51,82,0.07); border-left:3px solid var(--red);
-  font-family:var(--mono); font-size:.65rem; letter-spacing:.1em;
-  color:var(--red); line-height:1.8;
-}
-
-/* ─── RESPONSIVE ─── */
-@media(max-width:900px) {
-  .map-wrap { grid-template-columns:1fr; grid-template-rows:50vh 1fr; }
-  .stage-layout { grid-template-columns:1fr; }
-  .ops-grid { grid-template-columns:1fr; }
-  nav { padding:14px 20px; }
-  .nav-logo { font-size:.85rem; }
-  .nav-tab { padding:8px 12px; font-size:.6rem; }
-  .dive-wrap { padding:40px 20px; }
+@media(max-width:900px){
+  .chip-layout,.hw-grid,.dealer-grid,.stage-layout,.ops-grid{grid-template-columns:1fr}
+  .chip-main-img{height:260px}
+  .chip-info{border-left:1px solid rgba(0,255,231,.1);border-top:none;padding:36px 24px}
+  .map-body{grid-template-columns:1fr;grid-template-rows:55vh 1fr}
+  .wrap{padding:0 20px}
+  .section-wrap{padding:60px 0}
+  .dive-wrap{padding:60px 20px}
 }
 </style>
 </head>
 <body>
+<div class="bg-glow"></div>
 
-<!-- ═══ BOOT ═══ -->
-<section id="boot">
-  <div class="boot-grid"></div>
-  <div class="boot-pre">LETHE_TERMINAL // WORLD_DATABASE // v2.0</div>
-  <h1 class="boot-title">
-    <span class="glitch" data-t="LETHE">LETHE</span>
-  </h1>
-  <div class="boot-sub">NEO-CITY &nbsp;//&nbsp; MEMORY ARCHIVE</div>
-  <button class="boot-btn" onclick="enterWorld()"><span>▶ &nbsp;ENTER TERMINAL</span></button>
-  <div class="boot-footer">TERMINAL_ID: LETHE_SERVER_088 &nbsp;//&nbsp; 2026</div>
-</section>
+<!-- HEADER -->
+<header>
+  <div class="header-grid-bg"></div>
+  <div class="terminal-id">CORE_SYSTEM_ACCESS: GRANTED &nbsp;/&nbsp; NODE: LETHE_088 &nbsp;/&nbsp; STATUS: ONLINE</div>
+  <h1><span class="glitch-wrap" data-text="LETHE">LETHE</span></h1>
+  <div class="header-sub">VISUAL ARCHIVE &nbsp;v2.0 &nbsp;/&nbsp; NEO-CITY</div>
+  <div class="header-line"><span></span><div class="dot">◈</div><span></span></div>
+</header>
+<div class="divider"></div>
 
-<!-- ═══ NAV ═══ -->
-<nav id="main-nav" style="display:none;">
-  <div class="nav-logo">LETHE</div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('map-page',this)">◈ CITY MAP</button>
-    <button class="nav-tab" onclick="showPage('dive-page',this)">⬡ DIVE SYSTEM</button>
+<!-- 01 M-CHIP -->
+<section>
+  <div class="section-wrap">
+    <div class="wrap">
+      <div class="section-label">FILE_INDEX: 01</div>
+      <h2><span class="h2-num">01</span> THE M-CHIP</h2>
+      <div class="chip-layout">
+        <div class="img-frame chip-main-img">
+          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1000" alt="M-CHIP">
+          <div class="img-caption">DATA_LOG // MEMORY_PHYSICAL_STORAGE_UNIT // CLASS-Ω</div>
+        </div>
+        <div class="chip-info">
+          <div class="chip-tag">MATERIAL // MEMORY-PHYSICAL-CHIP</div>
+          <div class="chip-name">M-칩</div>
+          <p class="chip-desc">모든 기억은 <strong style="color:var(--gold)">M-칩</strong>에 물리적으로 저장됩니다. 이 작은 칩 하나에 누군가의 일생, 혹은 가장 지우고 싶은 순간이 담겨 거래됩니다. 추출된 기억은 뇌에서 영원히 사라지지만 M-칩은 파괴할 수 없습니다.</p>
+          <div class="chip-stat">
+            <div class="chip-stat-item"><div class="stat-label">STORAGE</div><div class="stat-val">UNLIMITED</div></div>
+            <div class="chip-stat-item"><div class="stat-label">DURABILITY</div><div class="stat-val">INDESTRUCTIBLE</div></div>
+            <div class="chip-stat-item"><div class="stat-label">EXTRACTION</div><div class="stat-val">ONE-WAY</div></div>
+            <div class="chip-stat-item"><div class="stat-label">MANUFACTURER</div><div class="stat-val">MNEMOSYNE CORP.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</nav>
+</section>
+<div class="divider"></div>
 
-<!-- ═══ MAP PAGE ═══ -->
-<section id="map-page" class="page active" style="display:none;">
-  <div class="map-wrap">
+<!-- 02 HW -->
+<section>
+  <div class="section-wrap">
+    <div class="wrap">
+      <div class="section-label">FILE_INDEX: 02</div>
+      <h2><span class="h2-num">02</span> DIVE &amp; HARDWARE</h2>
+      <div class="hw-grid">
+        <div class="hw-card deep-card">
+          <div class="img-frame hw-img">
+            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&q=80&w=800" alt="DEEP-LINK">
+            <div class="img-caption">DEVICE_TYPE // NEURAL_SYNC_LEGACY</div>
+          </div>
+          <div class="hw-card-body">
+            <div class="hw-badge deep">CLASS: ILLEGAL</div>
+            <div class="hw-name deep">DEEP-LINK</div>
+            <p class="hw-desc">거친 뇌파 동조를 강제하는 구식 동조 장치. 구역 88 딜러들이 보안을 뚫기 위해 사용하며, 부작용으로 자아 오염이 발생할 수 있습니다.</p>
+          </div>
+        </div>
+        <div class="hw-card hyper-card">
+          <div class="img-frame hw-img">
+            <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800" alt="HYPER-LINK">
+            <div class="img-caption">DEVICE_TYPE // NEURAL_SYNC_ADVANCED</div>
+          </div>
+          <div class="hw-card-body">
+            <div class="hw-badge hyper">CLASS: STANDARD</div>
+            <div class="hw-name hyper">HYPER-LINK</div>
+            <p class="hw-desc">패치형 최첨단 동조기. 코어의 엘리트들이나 기업 수사관이 사용하는 표준 장비입니다. 기업이 걸어둔 암호 앞에서는 막히기 쉽습니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
 
-    <!-- SVG MAP -->
+<!-- 03 DEALER -->
+<section>
+  <div class="section-wrap">
+    <div class="wrap">
+      <div class="section-label">FILE_INDEX: 03</div>
+      <h2><span class="h2-num">03</span> DEALER SYSTEM</h2>
+      <div class="dealer-grid">
+        <div class="dealer-card official" data-num="01">
+          <div class="dealer-status">▶ STATUS: AUTHORIZED</div>
+          <div class="dealer-title">공식 딜러</div>
+          <p class="dealer-desc">정식 등록된 거래소 딜러. 시스템의 규격 안에서 안전한 기억만을 선별하여 유통합니다. 므네모시네의 감시 하에 운영됩니다.</p>
+          <div class="dealer-tags">
+            <span class="dealer-tag">LICENSED</span>
+            <span class="dealer-tag">REGULATED</span>
+            <span class="dealer-tag">MNEMOSYNE_APPROVED</span>
+          </div>
+        </div>
+        <div class="dealer-card unofficial" data-num="02">
+          <div class="dealer-status">▶ STATUS: ILLEGAL</div>
+          <div class="dealer-title">비공식 딜러</div>
+          <p class="dealer-desc">구역 88의 불법 딜러. 불법 기억 거래를 하며, 금기된 기억을 발굴하거나 여러 인생을 조립하여 '가짜 자아'를 창조합니다.</p>
+          <div class="dealer-tags">
+            <span class="dealer-tag">BLACKMARKET</span>
+            <span class="dealer-tag">IDENTITY_FRAUD</span>
+            <span class="dealer-tag">SECTOR_88</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- 04 MAP ENTRY -->
+<section class="map-entry-section">
+  <div class="map-entry-label">FILE_INDEX: 04 // LOCATION DIRECTORY</div>
+  <div class="map-entry-title">CITY MAP</div>
+  <p class="map-entry-sub">네오시티의 구역을 탐색하세요. 지도에서 구역과 위치를 직접 클릭하여 상세 정보에 접근할 수 있습니다.</p>
+  <button class="map-entry-btn" onclick="openMap()"><span>◈ &nbsp;OPEN CITY MAP</span></button>
+  <div class="map-entry-preview">
+    <svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+      <circle cx="350" cy="120" r="110" fill="none" stroke="rgba(0,255,231,0.08)" stroke-width="1"/>
+      <circle cx="350" cy="120" r="70" fill="none" stroke="rgba(0,255,231,0.12)" stroke-width="1" stroke-dasharray="4 4"/>
+      <ellipse cx="210" cy="170" rx="90" ry="55" fill="rgba(255,192,68,0.06)" stroke="rgba(255,192,68,0.2)" stroke-width="1" stroke-dasharray="4 3"/>
+      <text x="180" y="165" fill="rgba(255,192,68,0.45)" font-size="9" font-family="Orbitron,sans-serif">SECTOR 88</text>
+      <circle cx="385" cy="100" r="60" fill="rgba(0,255,231,0.04)" stroke="rgba(0,255,231,0.2)" stroke-width="1"/>
+      <text x="354" y="97" fill="rgba(0,255,231,0.45)" font-size="9" font-family="Orbitron,sans-serif">THE CORE</text>
+      <circle cx="160" cy="185" r="3" fill="#ffc740" opacity=".7"/><circle cx="230" cy="200" r="3" fill="#ffc740" opacity=".7"/>
+      <circle cx="396" cy="80" r="4" fill="#00ffe7" opacity=".8"/><circle cx="436" cy="115" r="3" fill="#00ffe7" opacity=".7"/>
+      <circle cx="456" cy="88" r="3" fill="#00ffe7" opacity=".7"/><circle cx="356" cy="128" r="3" fill="#00ffe7" opacity=".7"/>
+      <circle cx="336" cy="148" r="2.5" fill="rgba(0,255,231,.4)" opacity=".6"/>
+      <line x1="230" y1="165" x2="326" y2="118" stroke="rgba(0,255,231,0.1)" stroke-width="1" stroke-dasharray="3 3"/>
+      <text x="595" y="228" fill="rgba(0,255,231,0.12)" font-size="7" font-family="monospace">NEO-CITY // LETHE</text>
+    </svg>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- 05 DIVE -->
+<section class="dive-section">
+  <div class="dive-wrap">
+    <div class="dive-head">
+      <div class="dive-head-pre">FILE_INDEX: 05 // DIVE_PROTOCOL // CLASSIFIED</div>
+      <div class="dive-head-title">DIVE SYSTEM</div>
+      <p class="dive-head-sub">M-칩 기억에 의식을 동조시켜 내부로 진입하는 기술. 단계가 깊어질수록 딜러의 뇌에 가해지는 부하와 자아 오염 위험이 증가합니다.</p>
+    </div>
+    <div class="stage-nav">
+      <button class="stage-tab active" onclick="showStage(1,this)"><span class="tab-num">01</span><span class="tab-label">관조</span></button>
+      <button class="stage-tab" onclick="showStage(2,this)"><span class="tab-num">02</span><span class="tab-label">공명</span></button>
+    </div>
+    <div class="stage-content active" id="stage-1">
+      <div class="stage-layout">
+        <div class="stage-visual"><div class="stage-anim"><div class="anim-scan"><div class="scan-line"></div><div class="scan-frame"></div><div class="scan-reels"><div class="scan-reel"></div><div class="scan-reel"></div><div class="scan-reel"></div><div class="scan-reel"></div><div class="scan-reel"></div><div class="scan-reel"></div></div><div class="scan-label">SCANNING // MEMORY_PLAYBACK_MODE</div></div></div></div>
+        <div class="stage-info">
+          <div class="stage-num">01</div>
+          <div class="stage-badge s1">STAGE 01 // OBSERVATION</div>
+          <div class="stage-title">관조 (觀照)</div>
+          <p class="stage-desc">기억의 표면을 영화처럼 시청합니다. 딜러는 기억 속 세계를 관찰할 수 있지만 어떠한 조작도 불가능하며, 정보 습득만이 가능한 가장 안전한 단계입니다.</p>
+          <div class="stage-warn">⚠ RISK_LEVEL: LOW<br>조작 불가 &nbsp;//&nbsp; 관찰 전용 &nbsp;//&nbsp; 부하 없음</div>
+        </div>
+      </div>
+    </div>
+    <div class="stage-content" id="stage-2">
+      <div class="stage-layout">
+        <div class="stage-visual"><div class="stage-anim"><div class="anim-resonance"><div class="res-ring"></div><div class="res-ring"></div><div class="res-ring"></div><div class="res-ring"></div><div class="res-noise"></div><div class="res-core"></div><div class="res-label">RESONATING // IDENTITY_RISK: ACTIVE</div></div></div></div>
+        <div class="stage-info">
+          <div class="stage-num">02</div>
+          <div class="stage-badge s2">STAGE 02 // RESONANCE</div>
+          <div class="stage-title">공명 (共鳴)</div>
+          <p class="stage-desc">기억 주체의 감정과 촉각을 직접 공유합니다. 이때부터 딜러의 뇌에 부하가 걸리며 기억 노이즈를 제거해 숨겨진 정보를 찾을 수 있습니다. 이 단계 이후 심층 작전이 해금됩니다.</p>
+          <div class="stage-warn">⚠ RISK_LEVEL: HIGH<br>감정 공유 활성 &nbsp;//&nbsp; 뇌 부하 시작 &nbsp;//&nbsp; 자아 오염 위험</div>
+        </div>
+      </div>
+    </div>
+    <div class="ops-section">
+      <div class="ops-title">심층 작전 &nbsp;<span style="font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;color:var(--red)">REQUIRES STAGE 02</span></div>
+      <div class="ops-grid">
+        <div class="ops-card" onclick="openOps('modify')"><div class="ops-card-badge">STAGE 02+</div><div class="ops-card-icon">✦</div><div class="ops-card-name">기억 수정</div><p class="ops-card-desc">기억 속의 물리 법칙을 비틀어 닫힌 문을 여는 등 기억 내 환경을 조작합니다.</p><div class="ops-card-warn">⚠ 자아 오염 위험 높음</div></div>
+        <div class="ops-card" onclick="openOps('extract')"><div class="ops-card-badge">STAGE 02+</div><div class="ops-card-icon">⬡</div><div class="ops-card-name">기억 추출</div><p class="ops-card-desc">M-칩으로 기억을 물리적으로 추출합니다. 추출된 기억은 뇌에서 영원히 사라집니다.</p><div class="ops-card-warn">⚠ 비가역적 작전</div></div>
+        <div class="ops-card" onclick="openOps('insert')"><div class="ops-card-badge">STAGE 02+</div><div class="ops-card-icon">◈</div><div class="ops-card-name">기억 삽입 / 조립</div><p class="ops-card-desc">M-칩의 기억을 삽입하거나 여러 기억을 이어붙여 가짜 자아를 창조합니다.</p><div class="ops-card-warn">⚠ 정체성 붕괴 위험</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<footer>
+  <div class="footer-logo">LETHE // NEO-CITY // TERMINAL_088</div>
+  <div class="footer-line"></div>
+  <div class="footer-copy">© 2026 NEO-CITY LETHE. ALL RIGHTS RESERVED.</div>
+</footer>
+
+<!-- MAP OVERLAY -->
+<div id="map-overlay">
+  <div class="map-topbar">
+    <div class="map-topbar-left">
+      <button class="map-back-btn" onclick="closeMap()">← BACK TO ARCHIVE</button>
+      <div class="map-topbar-title">NEO-CITY // LOCATION DIRECTORY</div>
+    </div>
+    <div class="map-topbar-status" id="map-status">SELECT A ZONE OR LOCATION</div>
+  </div>
+  <div class="map-body">
     <div class="map-canvas">
       <div class="map-bg-grid"></div>
-      <svg viewBox="0 0 700 600" xmlns="http://www.w3.org/2000/svg" id="city-svg">
+      <svg viewBox="0 0 700 600" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <filter id="glow-c"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          <filter id="glow-m"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="gc"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="gm"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
         </defs>
-
-        <!-- OUTER RING -->
         <circle cx="350" cy="300" r="270" fill="none" stroke="rgba(0,255,231,0.04)" stroke-width="1"/>
         <circle cx="350" cy="300" r="200" fill="none" stroke="rgba(0,255,231,0.06)" stroke-width="1" stroke-dasharray="6 6"/>
-        <circle cx="350" cy="300" r="120" fill="none" stroke="rgba(0,255,231,0.1)" stroke-width="1"/>
-
-        <!-- radial lines -->
+        <circle cx="350" cy="300" r="120" fill="none" stroke="rgba(0,255,231,0.10)" stroke-width="1"/>
         <line x1="350" y1="30" x2="350" y2="570" stroke="rgba(0,255,231,0.03)" stroke-width="1"/>
         <line x1="80" y1="300" x2="620" y2="300" stroke="rgba(0,255,231,0.03)" stroke-width="1"/>
         <line x1="159" y1="109" x2="541" y2="491" stroke="rgba(0,255,231,0.02)" stroke-width="1"/>
         <line x1="541" y1="109" x2="159" y2="491" stroke="rgba(0,255,231,0.02)" stroke-width="1"/>
-
-        <!-- SECTOR 88 ZONE -->
+        <!-- SECTOR 88 -->
         <g class="zone" id="zone-88" onclick="selectZone('88')">
-          <ellipse cx="200" cy="430" rx="150" ry="110" class="zone-fill"
-            fill="rgba(255,192,68,0.07)" stroke="rgba(255,192,68,0.25)" stroke-width="1.5" stroke-dasharray="5 3"/>
-          <text x="148" y="404" class="zone-label" fill="rgba(255,192,68,0.7)">SECTOR</text>
-          <text x="158" y="420" class="zone-label" fill="rgba(255,192,68,0.7)" font-size="14">88</text>
-          <text x="140" y="436" class="zone-sub" fill="rgba(255,192,68,0.4)">BLACKZONE // UNREGULATED</text>
+          <ellipse cx="200" cy="430" rx="150" ry="110" class="zone-fill" fill="rgba(255,192,68,0.07)" stroke="rgba(255,192,68,0.25)" stroke-width="1.5" stroke-dasharray="5 3"/>
+          <text x="148" y="406" class="zone-label" fill="rgba(255,192,68,0.7)">SECTOR</text>
+          <text x="158" y="424" class="zone-label" fill="rgba(255,192,68,0.7)" font-size="15">88</text>
+          <text x="140" y="440" class="zone-sub" fill="rgba(255,192,68,0.4)">BLACKZONE // UNREGULATED</text>
         </g>
-
-        <!-- THE CORE ZONE -->
+        <!-- THE CORE -->
         <g class="zone" id="zone-core" onclick="selectZone('core')">
-          <circle cx="390" cy="230" r="130" class="zone-fill"
-            fill="rgba(0,255,231,0.05)" stroke="rgba(0,255,231,0.3)" stroke-width="1.5"/>
+          <circle cx="390" cy="230" r="130" class="zone-fill" fill="rgba(0,255,231,0.05)" stroke="rgba(0,255,231,0.3)" stroke-width="1.5"/>
           <text x="330" y="218" class="zone-label" fill="rgba(0,255,231,0.7)" font-size="10">THE</text>
-          <text x="322" y="234" class="zone-label" fill="rgba(0,255,231,0.7)" font-size="15">CORE</text>
-          <text x="316" y="250" class="zone-sub" fill="rgba(0,255,231,0.4)">CORPORATE // RESTRICTED</text>
+          <text x="322" y="236" class="zone-label" fill="rgba(0,255,231,0.7)" font-size="15">CORE</text>
+          <text x="316" y="252" class="zone-sub" fill="rgba(0,255,231,0.4)">CORPORATE // RESTRICTED</text>
         </g>
-
-        <!-- CONNECTION LINES sector88 → core -->
-        <line x1="240" y1="360" x2="310" y2="290" class="conn-line"
-          stroke="rgba(0,255,231,0.15)" stroke-width="1" fill="none"/>
-
-        <!-- ── SECTOR 88 DOTS ── -->
-        <!-- Black Sector -->
-        <g class="loc-dot" id="dot-black" onclick="selectLoc('black')" filter="url(#glow-m)">
-          <circle class="dot-pulse" cx="140" cy="460" r="14" fill="rgba(255,192,68,0.06)" stroke="rgba(255,192,68,0.15)" stroke-width="1">
-            <animate attributeName="r" from="14" to="22" dur="2s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" from="0.4" to="0" dur="2s" repeatCount="indefinite"/>
-          </circle>
+        <line x1="240" y1="360" x2="310" y2="290" class="conn-line" stroke="rgba(0,255,231,0.12)" stroke-width="1" fill="none"/>
+        <!-- S88 dots -->
+        <g class="loc-dot" id="dot-black" onclick="selectLoc('black')" filter="url(#gm)">
+          <circle cx="140" cy="460" r="16" fill="rgba(255,192,68,0.05)" stroke="rgba(255,192,68,0.12)" stroke-width="1"><animate attributeName="r" from="16" to="24" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" from=".4" to="0" dur="2s" repeatCount="indefinite"/></circle>
           <circle class="dot-main" cx="140" cy="460" r="5" fill="var(--gold)" opacity=".9"/>
-          <text x="152" y="456" class="dot-label" fill="rgba(255,192,68,0.8)" font-size="9" font-family="'Share Tech Mono',monospace">블랙 섹터</text>
-          <text x="152" y="468" class="dot-label" fill="rgba(255,192,68,0.4)" font-size="7.5" font-family="'Share Tech Mono',monospace">BLACK SECTOR</text>
+          <text x="152" y="456" fill="rgba(255,192,68,0.8)" font-size="9" font-family="'Space Mono',monospace">블랙 섹터</text>
+          <text x="152" y="468" fill="rgba(255,192,68,0.4)" font-size="7.5" font-family="'Space Mono',monospace">BLACK SECTOR</text>
         </g>
-        <!-- Synapse Bar -->
-        <g class="loc-dot" id="dot-synapse" onclick="selectLoc('synapse')" filter="url(#glow-m)">
-          <circle class="dot-pulse" cx="240" cy="490" r="14" fill="rgba(255,192,68,0.06)" stroke="rgba(255,192,68,0.15)" stroke-width="1">
-            <animate attributeName="r" from="14" to="22" dur="2.4s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" from="0.4" to="0" dur="2.4s" repeatCount="indefinite"/>
-          </circle>
+        <g class="loc-dot" id="dot-synapse" onclick="selectLoc('synapse')" filter="url(#gm)">
+          <circle cx="240" cy="490" r="16" fill="rgba(255,192,68,0.05)" stroke="rgba(255,192,68,0.12)" stroke-width="1"><animate attributeName="r" from="16" to="24" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" from=".4" to="0" dur="2.4s" repeatCount="indefinite"/></circle>
           <circle class="dot-main" cx="240" cy="490" r="5" fill="var(--gold)" opacity=".9"/>
-          <text x="252" y="486" class="dot-label" fill="rgba(255,192,68,0.8)" font-size="9" font-family="'Share Tech Mono',monospace">시냅스 바</text>
-          <text x="252" y="498" class="dot-label" fill="rgba(255,192,68,0.4)" font-size="7.5" font-family="'Share Tech Mono',monospace">SYNAPSE BAR</text>
+          <text x="252" y="486" fill="rgba(255,192,68,0.8)" font-size="9" font-family="'Space Mono',monospace">시냅스 바</text>
+          <text x="252" y="498" fill="rgba(255,192,68,0.4)" font-size="7.5" font-family="'Space Mono',monospace">SYNAPSE BAR</text>
         </g>
-
-        <!-- ── THE CORE DOTS ── -->
-        <!-- Mnemosyne -->
-        <g class="loc-dot" id="dot-mnemosyne" onclick="selectLoc('mnemosyne')" filter="url(#glow-c)">
-          <circle class="dot-pulse" cx="390" cy="190" r="16" fill="rgba(0,255,231,0.05)" stroke="rgba(0,255,231,0.15)" stroke-width="1">
-            <animate attributeName="r" from="16" to="26" dur="2s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" from="0.5" to="0" dur="2s" repeatCount="indefinite"/>
-          </circle>
+        <!-- CORE dots -->
+        <g class="loc-dot" id="dot-mnemosyne" onclick="selectLoc('mnemosyne')" filter="url(#gc)">
+          <circle cx="390" cy="190" r="18" fill="rgba(0,255,231,0.04)" stroke="rgba(0,255,231,0.12)" stroke-width="1"><animate attributeName="r" from="18" to="28" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" from=".5" to="0" dur="2s" repeatCount="indefinite"/></circle>
           <circle class="dot-main" cx="390" cy="190" r="6" fill="var(--cyan)" opacity=".9"/>
-          <text x="402" y="186" class="dot-label" fill="rgba(0,255,231,0.9)" font-size="9" font-family="'Orbitron',sans-serif" font-weight="700">므네모시네</text>
-          <text x="402" y="198" class="dot-label" fill="rgba(0,255,231,0.4)" font-size="7.5" font-family="'Share Tech Mono',monospace">MNEMOSYNE HQ</text>
+          <text x="402" y="186" fill="rgba(0,255,231,0.9)" font-size="9" font-family="'Orbitron',sans-serif" font-weight="700">므네모시네</text>
+          <text x="402" y="198" fill="rgba(0,255,231,0.4)" font-size="7.5" font-family="'Space Mono',monospace">MNEMOSYNE HQ</text>
         </g>
-        <!-- Ether Garden -->
-        <g class="loc-dot" id="dot-ether" onclick="selectLoc('ether')" filter="url(#glow-c)">
-          <circle class="dot-pulse" cx="440" cy="260" r="12" fill="rgba(0,255,231,0.05)" stroke="rgba(0,255,231,0.15)" stroke-width="1">
-            <animate attributeName="r" from="12" to="20" dur="2.8s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" from="0.4" to="0" dur="2.8s" repeatCount="indefinite"/>
-          </circle>
+        <g class="loc-dot" id="dot-ether" onclick="selectLoc('ether')" filter="url(#gc)">
+          <circle cx="440" cy="260" r="14" fill="rgba(0,255,231,0.04)" stroke="rgba(0,255,231,0.1)" stroke-width="1"><animate attributeName="r" from="14" to="22" dur="2.8s" repeatCount="indefinite"/><animate attributeName="opacity" from=".4" to="0" dur="2.8s" repeatCount="indefinite"/></circle>
           <circle class="dot-main" cx="440" cy="260" r="5" fill="var(--cyan)" opacity=".8"/>
-          <text x="452" y="256" class="dot-label" fill="rgba(0,255,231,0.8)" font-size="9" font-family="'Share Tech Mono',monospace">에테르 가든</text>
-          <text x="452" y="268" class="dot-label" fill="rgba(0,255,231,0.4)" font-size="7.5" font-family="'Share Tech Mono',monospace">ETHER GARDEN</text>
+          <text x="452" y="256" fill="rgba(0,255,231,0.8)" font-size="9" font-family="'Space Mono',monospace">에테르 가든</text>
+          <text x="452" y="268" fill="rgba(0,255,231,0.4)" font-size="7.5" font-family="'Space Mono',monospace">ETHER GARDEN</text>
         </g>
-        <!-- Data Auction -->
-        <g class="loc-dot" id="dot-auction" onclick="selectLoc('auction')" filter="url(#glow-c)">
-          <circle class="dot-pulse" cx="480" cy="210" r="12" fill="rgba(0,255,231,0.05)" stroke="rgba(0,255,231,0.15)" stroke-width="1">
-            <animate attributeName="r" from="12" to="20" dur="3s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" from="0.4" to="0" dur="3s" repeatCount="indefinite"/>
-          </circle>
+        <g class="loc-dot" id="dot-auction" onclick="selectLoc('auction')" filter="url(#gc)">
+          <circle cx="480" cy="210" r="14" fill="rgba(0,255,231,0.04)" stroke="rgba(0,255,231,0.1)" stroke-width="1"><animate attributeName="r" from="14" to="22" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" from=".4" to="0" dur="3s" repeatCount="indefinite"/></circle>
           <circle class="dot-main" cx="480" cy="210" r="5" fill="var(--cyan)" opacity=".8"/>
-          <text x="492" y="206" class="dot-label" fill="rgba(0,255,231,0.8)" font-size="9" font-family="'Share Tech Mono',monospace">데이터 경매장</text>
-          <text x="492" y="218" class="dot-label" fill="rgba(0,255,231,0.4)" font-size="7.5" font-family="'Share Tech Mono',monospace">DATA AUCTION</text>
+          <text x="492" y="206" fill="rgba(0,255,231,0.8)" font-size="9" font-family="'Space Mono',monospace">데이터 경매장</text>
+          <text x="492" y="218" fill="rgba(0,255,231,0.4)" font-size="7.5" font-family="'Space Mono',monospace">DATA AUCTION</text>
         </g>
-        <!-- Memory Laundry -->
-        <g class="loc-dot" id="dot-laundry" onclick="selectLoc('laundry')" filter="url(#glow-c)">
-          <circle class="dot-pulse" cx="350" cy="270" r="12" fill="rgba(0,255,231,0.05)" stroke="rgba(0,255,231,0.15)" stroke-width="1">
-            <animate attributeName="r" from="12" to="20" dur="2.2s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" from="0.4" to="0" dur="2.2s" repeatCount="indefinite"/>
-          </circle>
+        <g class="loc-dot" id="dot-laundry" onclick="selectLoc('laundry')" filter="url(#gc)">
+          <circle cx="350" cy="270" r="14" fill="rgba(0,255,231,0.04)" stroke="rgba(0,255,231,0.1)" stroke-width="1"><animate attributeName="r" from="14" to="22" dur="2.2s" repeatCount="indefinite"/><animate attributeName="opacity" from=".4" to="0" dur="2.2s" repeatCount="indefinite"/></circle>
           <circle class="dot-main" cx="350" cy="270" r="5" fill="var(--cyan)" opacity=".8"/>
-          <text x="360" y="266" class="dot-label" fill="rgba(0,255,231,0.8)" font-size="9" font-family="'Share Tech Mono',monospace">기억 세탁소</text>
-          <text x="360" y="278" class="dot-label" fill="rgba(0,255,231,0.4)" font-size="7.5" font-family="'Share Tech Mono',monospace">MEMORY LAUNDRY</text>
+          <text x="360" y="266" fill="rgba(0,255,231,0.8)" font-size="9" font-family="'Space Mono',monospace">기억 세탁소</text>
+          <text x="360" y="278" fill="rgba(0,255,231,0.4)" font-size="7.5" font-family="'Space Mono',monospace">MEMORY LAUNDRY</text>
         </g>
-        <!-- Nepenthes -->
-        <g class="loc-dot" id="dot-nepenthes" onclick="selectLoc('nepenthes')" filter="url(#glow-c)">
-          <circle class="dot-pulse" cx="330" cy="310" r="10" fill="rgba(0,255,231,0.04)" stroke="rgba(0,255,231,0.1)" stroke-width="1">
-            <animate attributeName="r" from="10" to="18" dur="3.5s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" from="0.3" to="0" dur="3.5s" repeatCount="indefinite"/>
-          </circle>
+        <g class="loc-dot" id="dot-nepenthes" onclick="selectLoc('nepenthes')" filter="url(#gc)">
+          <circle cx="330" cy="310" r="12" fill="rgba(0,255,231,0.03)" stroke="rgba(0,255,231,0.08)" stroke-width="1"><animate attributeName="r" from="12" to="20" dur="3.5s" repeatCount="indefinite"/><animate attributeName="opacity" from=".3" to="0" dur="3.5s" repeatCount="indefinite"/></circle>
           <circle class="dot-main" cx="330" cy="310" r="4" fill="rgba(0,255,231,0.6)" opacity=".7"/>
-          <text x="340" y="306" class="dot-label" fill="rgba(0,255,231,0.6)" font-size="8.5" font-family="'Share Tech Mono',monospace">네펜데스</text>
-          <text x="340" y="318" class="dot-label" fill="rgba(0,255,231,0.3)" font-size="7" font-family="'Share Tech Mono',monospace">NEPENTHES ▸ SECRET</text>
+          <text x="340" y="306" fill="rgba(0,255,231,0.55)" font-size="8.5" font-family="'Space Mono',monospace">네펜데스</text>
+          <text x="340" y="318" fill="rgba(0,255,231,0.28)" font-size="7" font-family="'Space Mono',monospace">NEPENTHES ▸ SECRET</text>
         </g>
-
-        <!-- COMPASS -->
-        <text x="640" y="554" fill="rgba(0,255,231,0.15)" font-size="8" font-family="'Share Tech Mono',monospace">NEO-CITY</text>
-        <text x="640" y="565" fill="rgba(0,255,231,0.1)" font-size="7" font-family="'Share Tech Mono',monospace">LETHE//MAP v2</text>
+        <text x="630" y="570" fill="rgba(0,255,231,0.1)" font-size="7" font-family="monospace">NEO-CITY // LETHE v2</text>
       </svg>
     </div>
 
@@ -749,422 +561,163 @@ nav {
     <div class="map-panel" id="map-panel">
       <div id="panel-default" class="panel-default">
         <div class="pd-icon">◈</div>
-        <p>지도의 구역이나<br>위치를 클릭하세요<br><br>CLICK ZONE OR LOCATION<br>TO ACCESS DATA</p>
+        <p>지도의 구역 또는<br>위치를 클릭하세요<br><br>CLICK ZONE OR LOCATION<br>TO ACCESS DATA</p>
       </div>
-
-      <!-- Zone: Sector 88 -->
-      <div id="panel-88" style="display:none; height:100%; flex-direction:column;">
+      <div id="panel-88" style="display:none;height:100%;flex-direction:column;">
         <div class="panel-header">
           <div class="panel-zone-tag" style="color:var(--gold)">⬡ BLACKZONE // UNREGULATED</div>
           <div class="panel-zone-name" style="color:var(--gold)">SECTOR 88</div>
           <div class="panel-zone-desc">도시 외곽의 무법지대. 규제 밖의 기억 거래와 자아 오염자들이 뒤섞인 구역입니다.</div>
         </div>
-        <div class="panel-locs loc-sector88">
-          <div class="loc-item" onclick="openDetail('black')">
-            <div class="loc-item-name">블랙 섹터</div>
-            <div class="loc-item-sub">BLACK SECTOR // UNDERGROUND MARKET</div>
-          </div>
-          <div class="loc-item" onclick="openDetail('synapse')">
-            <div class="loc-item-name">시냅스 바</div>
-            <div class="loc-item-sub">SYNAPSE BAR // SURVEILLANCE NODE</div>
-          </div>
+        <div class="panel-locs loc-s88">
+          <div class="loc-item" id="li-black" onclick="openDetail('black')"><div class="loc-item-name">블랙 섹터</div><div class="loc-item-sub">BLACK SECTOR // UNDERGROUND MARKET</div></div>
+          <div class="loc-item" id="li-synapse" onclick="openDetail('synapse')"><div class="loc-item-name">시냅스 바</div><div class="loc-item-sub">SYNAPSE BAR // SURVEILLANCE NODE</div></div>
         </div>
       </div>
-
-      <!-- Zone: Core -->
-      <div id="panel-core" style="display:none; height:100%; flex-direction:column;">
+      <div id="panel-core" style="display:none;height:100%;flex-direction:column;">
         <div class="panel-header">
           <div class="panel-zone-tag" style="color:var(--cyan)">◈ CORPORATE ZONE // RESTRICTED</div>
           <div class="panel-zone-name">THE CORE</div>
           <div class="panel-zone-desc">므네모시네가 지배하는 코어. 도시의 모든 기억 유통이 이곳에서 통제됩니다.</div>
         </div>
         <div class="panel-locs loc-core">
-          <div class="loc-item" onclick="openDetail('mnemosyne')">
-            <div class="loc-item-name">므네모시네 HQ</div>
-            <div class="loc-item-sub">MNEMOSYNE // CORP HEADQUARTERS</div>
-          </div>
-          <div class="loc-item" onclick="openDetail('ether')">
-            <div class="loc-item-name">에테르 가든</div>
-            <div class="loc-item-sub">ETHER GARDEN // VIRTUAL PARADISE</div>
-          </div>
-          <div class="loc-item" onclick="openDetail('auction')">
-            <div class="loc-item-name">데이터 경매장</div>
-            <div class="loc-item-sub">DATA AUCTION // MEMORY MARKET</div>
-          </div>
-          <div class="loc-item" onclick="openDetail('laundry')">
-            <div class="loc-item-name">기억 세탁소</div>
-            <div class="loc-item-sub">MEMORY LAUNDRY // ERASURE SERVICE</div>
-          </div>
-          <div class="loc-item" onclick="openDetail('nepenthes')">
-            <div class="loc-item-name">네펜데스 ▸ 비밀</div>
-            <div class="loc-item-sub">NEPENTHES // CLASSIFIED LOUNGE</div>
-          </div>
+          <div class="loc-item" id="li-mnemosyne" onclick="openDetail('mnemosyne')"><div class="loc-item-name">므네모시네 HQ</div><div class="loc-item-sub">MNEMOSYNE // CORP HEADQUARTERS</div></div>
+          <div class="loc-item" id="li-ether" onclick="openDetail('ether')"><div class="loc-item-name">에테르 가든</div><div class="loc-item-sub">ETHER GARDEN // VIRTUAL PARADISE</div></div>
+          <div class="loc-item" id="li-auction" onclick="openDetail('auction')"><div class="loc-item-name">데이터 경매장</div><div class="loc-item-sub">DATA AUCTION // MEMORY MARKET</div></div>
+          <div class="loc-item" id="li-laundry" onclick="openDetail('laundry')"><div class="loc-item-name">기억 세탁소</div><div class="loc-item-sub">MEMORY LAUNDRY // ERASURE SERVICE</div></div>
+          <div class="loc-item" id="li-nepenthes" onclick="openDetail('nepenthes')"><div class="loc-item-name">네펜데스 ▸ 비밀</div><div class="loc-item-sub">NEPENTHES // CLASSIFIED LOUNGE</div></div>
         </div>
       </div>
 
-      <!-- DETAIL PANELS -->
+      <!-- DETAILS -->
       <div class="loc-detail" id="detail-black">
-        <div class="detail-header">
-          <div>
-            <div class="detail-index">SECTOR_88 // LOC_01</div>
-          </div>
-          <button class="detail-back" onclick="closeDetail()">← BACK</button>
-        </div>
-        <img class="detail-img" src="https://images.unsplash.com/photo-1524169113253-c6ba17398840?auto=format&fit=crop&q=80&w=800" alt="Black Sector">
-        <div class="detail-body">
-          <div class="detail-name" style="color:var(--gold)">블랙 섹터<br><span style="font-size:.7em;opacity:.5">Black Sector</span></div>
-          <p class="detail-desc">도시의 버려진 지하 선로를 개조한 암시장. 규제 없는 기억 거래와 자아 오염된 노숙자들이 가득한 무법지대입니다. 비공식 딜러들의 주요 거점이며, 추출된 기억이 감정 자극제로 소비되기도 합니다.</p>
-          <div class="detail-tags">
-            <span class="detail-tag" style="color:var(--red);border-color:rgba(255,51,82,.3)">RESTRICTED</span>
-            <span class="detail-tag" style="color:var(--gold);border-color:rgba(255,192,68,.3)">BLACKMARKET</span>
-            <span class="detail-tag" style="color:var(--muted);border-color:rgba(68,80,102,.3)">UNDERGROUND</span>
-          </div>
-        </div>
+        <div class="detail-header"><div class="detail-zone-tag">SECTOR_88 // LOC_01</div><button class="detail-back-btn" onclick="closeDetail('88')">← 목록으로</button></div>
+        <img class="detail-img" src="https://images.unsplash.com/photo-1524169113253-c6ba17398840?auto=format&fit=crop&q=80&w=800" alt="">
+        <div class="detail-body"><div class="detail-index">INDEX: S88-01</div><div class="detail-name" style="color:var(--gold)">블랙 섹터<br><span style="font-size:.7em;opacity:.4;font-family:var(--mono)">BLACK SECTOR</span></div><p class="detail-desc">도시의 버려진 지하 선로를 개조한 암시장. 규제 없는 기억 거래와 자아 오염된 노숙자들이 가득한 무법지대입니다. 비공식 딜러들의 주요 거점이며, 추출된 기억이 감정 자극제로 소비되기도 합니다.</p><div class="detail-tags"><span class="detail-tag" style="color:var(--red);border-color:rgba(255,42,74,.3)">RESTRICTED</span><span class="detail-tag" style="color:var(--gold);border-color:rgba(255,192,68,.3)">BLACKMARKET</span><span class="detail-tag" style="color:var(--muted);border-color:rgba(85,96,128,.3)">UNDERGROUND</span></div></div>
       </div>
-
       <div class="loc-detail" id="detail-synapse">
-        <div class="detail-header">
-          <div><div class="detail-index">SECTOR_88 // LOC_02</div></div>
-          <button class="detail-back" onclick="closeDetail()">← BACK</button>
-        </div>
-        <img class="detail-img" src="https://images.unsplash.com/photo-1572116469696-31de0f17cc34?auto=format&fit=crop&q=80&w=800" alt="Synapse Bar">
-        <div class="detail-body">
-          <div class="detail-name" style="color:var(--gold)">시냅스 바<br><span style="font-size:.7em;opacity:.5">Synapse Bar</span></div>
-          <p class="detail-desc">기억 증폭 술을 파는 성역. 하지만 벽면의 모든 센서는 손님들의 기억 파편을 수집하여 브로커에게 넘기고 있습니다. 겉으로는 안식처이나 실질적으로는 감시 노드입니다.</p>
-          <div class="detail-tags">
-            <span class="detail-tag" style="color:var(--gold);border-color:rgba(255,192,68,.3)">SURVEILLANCE</span>
-            <span class="detail-tag" style="color:var(--gold);border-color:rgba(255,192,68,.3)">MEMORY_BAR</span>
-          </div>
-        </div>
+        <div class="detail-header"><div class="detail-zone-tag">SECTOR_88 // LOC_02</div><button class="detail-back-btn" onclick="closeDetail('88')">← 목록으로</button></div>
+        <img class="detail-img" src="https://images.unsplash.com/photo-1572116469696-31de0f17cc34?auto=format&fit=crop&q=80&w=800" alt="">
+        <div class="detail-body"><div class="detail-index">INDEX: S88-02</div><div class="detail-name" style="color:var(--gold)">시냅스 바<br><span style="font-size:.7em;opacity:.4;font-family:var(--mono)">SYNAPSE BAR</span></div><p class="detail-desc">기억 증폭 술을 파는 성역. 하지만 벽면의 모든 센서는 손님들의 기억 파편을 수집하여 브로커에게 넘기고 있습니다. 겉으로는 안식처이나 실질적으로는 감시 노드입니다.</p><div class="detail-tags"><span class="detail-tag" style="color:var(--gold);border-color:rgba(255,192,68,.3)">SURVEILLANCE</span><span class="detail-tag" style="color:var(--gold);border-color:rgba(255,192,68,.3)">MEMORY_BAR</span></div></div>
       </div>
-
       <div class="loc-detail" id="detail-mnemosyne">
-        <div class="detail-header">
-          <div><div class="detail-index">THE_CORE // LOC_01 // CLASSIFIED</div></div>
-          <button class="detail-back" onclick="closeDetail()">← BACK</button>
-        </div>
-        <img class="detail-img" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800" alt="Mnemosyne">
-        <div class="detail-body">
-          <div class="detail-name" style="color:var(--cyan)">므네모시네<br><span style="font-size:.7em;opacity:.5">Mnemosyne Corp.</span></div>
-          <p class="detail-desc">거대 기업의 심장부. 도시의 모든 칩 생산과 유통을 독점하며, 국가와 기업의 기밀이 담긴 블랙 서버를 수호합니다.</p>
-          <div class="detail-tags">
-            <span class="detail-tag" style="color:var(--red);border-color:rgba(255,51,82,.3)">⚠ NO_ACCESS</span>
-            <span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">CORP_HQ</span>
-            <span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">BLACK_SERVER</span>
-          </div>
-        </div>
+        <div class="detail-header"><div class="detail-zone-tag">THE_CORE // LOC_01 // CLASSIFIED</div><button class="detail-back-btn" onclick="closeDetail('core')">← 목록으로</button></div>
+        <img class="detail-img" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800" alt="">
+        <div class="detail-body"><div class="detail-index">INDEX: CORE-01</div><div class="detail-name" style="color:var(--cyan)">므네모시네<br><span style="font-size:.7em;opacity:.4;font-family:var(--mono)">MNEMOSYNE CORP.</span></div><p class="detail-desc">거대 기업의 심장부. 도시의 모든 칩 생산과 유통을 독점하며, 국가와 기업의 기밀이 담긴 블랙 서버를 수호합니다.</p><div class="detail-tags"><span class="detail-tag" style="color:var(--red);border-color:rgba(255,42,74,.3)">⚠ NO_ACCESS</span><span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">CORP_HQ</span><span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">BLACK_SERVER</span></div></div>
       </div>
-
       <div class="loc-detail" id="detail-ether">
-        <div class="detail-header">
-          <div><div class="detail-index">THE_CORE // LOC_02</div></div>
-          <button class="detail-back" onclick="closeDetail()">← BACK</button>
-        </div>
-        <img class="detail-img" src="https://images.unsplash.com/photo-1533134486753-c833f0ed4866?auto=format&fit=crop&q=80&w=800" alt="Ether Garden">
-        <div class="detail-body">
-          <div class="detail-name" style="color:var(--cyan)">에테르 가든<br><span style="font-size:.7em;opacity:.5">Ether Garden</span></div>
-          <p class="detail-desc">상류층을 위한 완전 몰입형 가상 낙원. 원하는 기억 속에서 시간을 보낼 수 있는 코어의 독점 휴식 시설입니다. 현실과의 경계가 허물어지는 부작용이 보고되고 있습니다.</p>
-          <div class="detail-tags">
-            <span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">VIP_ONLY</span>
-            <span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">VIRTUAL</span>
-          </div>
-        </div>
+        <div class="detail-header"><div class="detail-zone-tag">THE_CORE // LOC_02</div><button class="detail-back-btn" onclick="closeDetail('core')">← 목록으로</button></div>
+        <img class="detail-img" src="https://images.unsplash.com/photo-1533134486753-c833f0ed4866?auto=format&fit=crop&q=80&w=800" alt="">
+        <div class="detail-body"><div class="detail-index">INDEX: CORE-02</div><div class="detail-name" style="color:var(--cyan)">에테르 가든<br><span style="font-size:.7em;opacity:.4;font-family:var(--mono)">ETHER GARDEN</span></div><p class="detail-desc">상류층을 위한 완전 몰입형 가상 낙원. 원하는 기억 속에서 시간을 보낼 수 있는 코어의 독점 휴식 시설입니다. 현실과의 경계가 허물어지는 부작용이 보고되고 있습니다.</p><div class="detail-tags"><span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">VIP_ONLY</span><span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">VIRTUAL_PARADISE</span></div></div>
       </div>
-
       <div class="loc-detail" id="detail-auction">
-        <div class="detail-header">
-          <div><div class="detail-index">THE_CORE // LOC_03</div></div>
-          <button class="detail-back" onclick="closeDetail()">← BACK</button>
-        </div>
-        <img class="detail-img" src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&q=80&w=800" alt="Data Auction">
-        <div class="detail-body">
-          <div class="detail-name" style="color:var(--cyan)">데이터 경매장<br><span style="font-size:.7em;opacity:.5">Data Auction</span></div>
-          <p class="detail-desc">자극적인 기억들이 실시간으로 경매에 부쳐지는 코어의 유흥 중심지. 희귀 기억일수록 천문학적인 가격에 낙찰되며, 익명의 구매자들이 전 세계에서 몰려듭니다.</p>
-          <div class="detail-tags">
-            <span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">LIVE_AUCTION</span>
-            <span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">ANONYMOUS</span>
-          </div>
-        </div>
+        <div class="detail-header"><div class="detail-zone-tag">THE_CORE // LOC_03</div><button class="detail-back-btn" onclick="closeDetail('core')">← 목록으로</button></div>
+        <img class="detail-img" src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&q=80&w=800" alt="">
+        <div class="detail-body"><div class="detail-index">INDEX: CORE-03</div><div class="detail-name" style="color:var(--cyan)">데이터 경매장<br><span style="font-size:.7em;opacity:.4;font-family:var(--mono)">DATA AUCTION</span></div><p class="detail-desc">자극적인 기억들이 실시간으로 경매에 부쳐지는 코어의 유흥 중심지. 희귀 기억일수록 천문학적인 가격에 낙찰되며, 익명의 구매자들이 전 세계에서 몰려듭니다.</p><div class="detail-tags"><span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">LIVE_AUCTION</span><span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">ANONYMOUS</span></div></div>
       </div>
-
       <div class="loc-detail" id="detail-laundry">
-        <div class="detail-header">
-          <div><div class="detail-index">THE_CORE // LOC_04</div></div>
-          <button class="detail-back" onclick="closeDetail()">← BACK</button>
-        </div>
-        <img class="detail-img" src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=800" alt="Memory Laundry">
-        <div class="detail-body">
-          <div class="detail-name" style="color:var(--cyan)">기억 세탁소<br><span style="font-size:.7em;opacity:.5">Memory Laundry</span></div>
-          <p class="detail-desc">과거를 지우는 세탁 서비스 시설. 트라우마, 범죄 기록, 불편한 진실을 완벽하게 삭제합니다. 코어의 기득권층이 주로 이용합니다.</p>
-          <div class="detail-tags">
-            <span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">ERASURE</span>
-            <span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">ELITE_ONLY</span>
-          </div>
-        </div>
+        <div class="detail-header"><div class="detail-zone-tag">THE_CORE // LOC_04</div><button class="detail-back-btn" onclick="closeDetail('core')">← 목록으로</button></div>
+        <img class="detail-img" src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=800" alt="">
+        <div class="detail-body"><div class="detail-index">INDEX: CORE-04</div><div class="detail-name" style="color:var(--cyan)">기억 세탁소<br><span style="font-size:.7em;opacity:.4;font-family:var(--mono)">MEMORY LAUNDRY</span></div><p class="detail-desc">과거를 지우는 세탁 서비스 시설. 트라우마, 범죄 기록, 불편한 진실을 완벽하게 삭제합니다. 코어의 기득권층이 주로 이용하며, 가격은 기억의 무게에 따라 책정됩니다.</p><div class="detail-tags"><span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">ERASURE</span><span class="detail-tag" style="color:var(--cyan);border-color:rgba(0,255,231,.2)">ELITE_ONLY</span></div></div>
       </div>
-
       <div class="loc-detail" id="detail-nepenthes">
-        <div class="detail-header">
-          <div><div class="detail-index">THE_CORE // LOC_05 // ████████</div></div>
-          <button class="detail-back" onclick="closeDetail()">← BACK</button>
-        </div>
-        <img class="detail-img" src="https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&q=80&w=800" alt="Nepenthes">
-        <div class="detail-body">
-          <div class="detail-name" style="color:var(--cyan)">네펜데스<br><span style="font-size:.7em;opacity:.5">Nepenthes // CLASSIFIED</span></div>
-          <p class="detail-desc">완벽한 망각과 안식을 제공하는 비밀 라운지. 기억 세탁소의 지하에 위치하며, 일체의 기억을 내려놓고 완전한 공백 상태를 경험할 수 있습니다. 입장 경로는 철저히 비밀에 부쳐집니다.</p>
-          <div class="detail-tags">
-            <span class="detail-tag" style="color:var(--red);border-color:rgba(255,51,82,.3)">CLASSIFIED</span>
-            <span class="detail-tag" style="color:var(--muted);border-color:rgba(68,80,102,.3)">OBLIVION</span>
-          </div>
-        </div>
+        <div class="detail-header"><div class="detail-zone-tag">THE_CORE // LOC_05 // ████████</div><button class="detail-back-btn" onclick="closeDetail('core')">← 목록으로</button></div>
+        <img class="detail-img" src="https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&q=80&w=800" alt="">
+        <div class="detail-body"><div class="detail-index">INDEX: CORE-05 // REDACTED</div><div class="detail-name" style="color:var(--cyan)">네펜데스<br><span style="font-size:.7em;opacity:.4;font-family:var(--mono)">NEPENTHES // CLASSIFIED</span></div><p class="detail-desc">완벽한 망각과 안식을 제공하는 비밀 라운지. 기억 세탁소의 지하에 위치하며, 일체의 기억을 내려놓고 완전한 공백 상태를 경험할 수 있습니다. 입장 경로는 철저히 비밀에 부쳐집니다.</p><div class="detail-tags"><span class="detail-tag" style="color:var(--red);border-color:rgba(255,42,74,.3)">CLASSIFIED</span><span class="detail-tag" style="color:var(--muted);border-color:rgba(85,96,128,.3)">OBLIVION</span></div></div>
       </div>
     </div>
   </div>
-</section>
-
-<!-- ═══ DIVE PAGE ═══ -->
-<section id="dive-page" class="page" style="display:none;">
-  <div class="dive-wrap">
-    <div class="dive-head">
-      <div class="dive-head-pre">SYSTEM_MODULE // DIVE_PROTOCOL // CLASSIFIED</div>
-      <div class="dive-head-title">DIVE SYSTEM</div>
-      <p class="dive-head-sub">M-칩 기억에 의식을 동조시켜 내부로 진입하는 기술. 단계가 깊어질수록 딜러의 뇌에 가해지는 부하와 자아 오염 위험이 증가합니다.</p>
-    </div>
-
-    <!-- STAGE TABS -->
-    <div class="stage-nav">
-      <button class="stage-tab active" onclick="showStage(1,this)">
-        <span class="tab-num">01</span>
-        <span class="tab-label">관조</span>
-      </button>
-      <button class="stage-tab" onclick="showStage(2,this)">
-        <span class="tab-num">02</span>
-        <span class="tab-label">공명</span>
-      </button>
-    </div>
-
-    <!-- STAGE 1 -->
-    <div class="stage-content active" id="stage-1">
-      <div class="stage-layout">
-        <div class="stage-visual">
-          <div class="stage-anim">
-            <div class="anim-scan">
-              <div class="scan-line"></div>
-              <div class="scan-frame"></div>
-              <div class="scan-reels">
-                <div class="scan-reel"></div><div class="scan-reel"></div><div class="scan-reel"></div>
-                <div class="scan-reel"></div><div class="scan-reel"></div><div class="scan-reel"></div>
-              </div>
-              <div class="scan-label">SCANNING // MEMORY_PLAYBACK_MODE</div>
-            </div>
-          </div>
-        </div>
-        <div class="stage-info">
-          <div class="stage-num">01</div>
-          <div class="stage-badge s1">STAGE 01 // OBSERVATION</div>
-          <div class="stage-title">관조 (觀照)</div>
-          <p class="stage-desc">기억의 표면을 영화처럼 시청합니다. 딜러는 기억 속 세계를 관찰할 수 있지만 어떠한 조작도 불가능하며, 정보 습득만이 가능한 가장 안전한 단계입니다.</p>
-          <div class="stage-warn">
-            ⚠ RISK_LEVEL: LOW<br>
-            조작 불가 &nbsp;//&nbsp; 관찰 전용 &nbsp;//&nbsp; 부하 없음
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- STAGE 2 -->
-    <div class="stage-content" id="stage-2">
-      <div class="stage-layout">
-        <div class="stage-visual">
-          <div class="stage-anim">
-            <div class="anim-resonance">
-              <div class="res-ring"></div>
-              <div class="res-ring"></div>
-              <div class="res-ring"></div>
-              <div class="res-ring"></div>
-              <div class="res-noise"></div>
-              <div class="res-core"></div>
-              <div class="res-label">RESONATING // IDENTITY_RISK: ACTIVE</div>
-            </div>
-          </div>
-        </div>
-        <div class="stage-info">
-          <div class="stage-num">02</div>
-          <div class="stage-badge s2">STAGE 02 // RESONANCE</div>
-          <div class="stage-title">공명 (共鳴)</div>
-          <p class="stage-desc">기억 주체의 감정과 촉각을 직접 공유합니다. 이때부터 딜러의 뇌에 부하가 걸리며 기억 노이즈를 제거해 숨겨진 정보를 찾을 수 있습니다. 이 단계 이후 심층 작전이 해금됩니다.</p>
-          <div class="stage-warn">
-            ⚠ RISK_LEVEL: HIGH<br>
-            감정 공유 활성 &nbsp;//&nbsp; 뇌 부하 시작 &nbsp;//&nbsp; 자아 오염 위험
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- OPS SECTION -->
-    <div class="ops-section">
-      <div class="ops-title">심층 작전 &nbsp;<span style="font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;color:var(--red)">REQUIRES STAGE 02</span></div>
-      <div class="ops-grid">
-
-        <div class="ops-card" onclick="openOps('modify')">
-          <div class="ops-card-badge">STAGE 02+</div>
-          <div class="ops-card-icon">✦</div>
-          <div class="ops-card-name">기억 수정</div>
-          <p class="ops-card-desc">기억 속의 물리 법칙을 비틀어 닫힌 문을 여는 등 기억 내 환경을 조작합니다.</p>
-          <div class="ops-card-warn">⚠ 자아 오염 위험 높음</div>
-        </div>
-
-        <div class="ops-card" onclick="openOps('extract')">
-          <div class="ops-card-badge">STAGE 02+</div>
-          <div class="ops-card-icon">⬡</div>
-          <div class="ops-card-name">기억 추출</div>
-          <p class="ops-card-desc">M-칩으로 기억을 물리적으로 추출합니다. 추출된 기억은 뇌에서 영원히 사라집니다.</p>
-          <div class="ops-card-warn">⚠ 비가역적 작전</div>
-        </div>
-
-        <div class="ops-card" onclick="openOps('insert')">
-          <div class="ops-card-badge">STAGE 02+</div>
-          <div class="ops-card-icon">◈</div>
-          <div class="ops-card-name">기억 삽입 / 조립</div>
-          <p class="ops-card-desc">M-칩의 기억을 삽입하거나 여러 기억을 이어붙여 가짜 자아를 창조합니다.</p>
-          <div class="ops-card-warn">⚠ 정체성 붕괴 위험</div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
+</div>
 
 <!-- OPS POPUP -->
 <div class="ops-popup-overlay" id="ops-overlay" onclick="closeOpsIfBg(event)">
   <div class="ops-popup">
-    <div class="ops-popup-bar">
-      <span class="ops-popup-bar-title" id="popup-bar-title">OPS_MODULE</span>
-      <button class="ops-close" onclick="closeOps()">✕</button>
-    </div>
+    <div class="ops-popup-bar"><span class="ops-popup-bar-title" id="popup-bar-title">OPS_MODULE</span><button class="ops-close" onclick="closeOps()">✕ CLOSE</button></div>
     <div class="ops-popup-body" id="popup-body"></div>
   </div>
 </div>
 
 <script>
-// ─── BOOT
-function enterWorld() {
-  document.getElementById('boot').style.display = 'none';
-  document.getElementById('main-nav').style.display = 'flex';
-  document.getElementById('map-page').style.display = 'block';
-  document.getElementById('map-page').classList.add('active');
+// MAP
+function openMap(){
+  const o=document.getElementById('map-overlay');
+  o.style.display='flex';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.add('visible')));
+  document.body.style.overflow='hidden';
 }
-
-// ─── PAGE NAV
-function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => { p.style.display='none'; p.classList.remove('active'); });
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  const el = document.getElementById(id);
-  el.style.display = 'block';
-  setTimeout(() => el.classList.add('active'), 10);
-  btn.classList.add('active');
+function closeMap(){
+  const o=document.getElementById('map-overlay');
+  o.classList.remove('visible');
+  setTimeout(()=>{o.style.display='none';},400);
+  document.body.style.overflow='';
+  closeDetail(null,true);
+  resetPanel();
+  document.querySelectorAll('.zone').forEach(z=>z.classList.remove('active'));
+  document.querySelectorAll('.loc-dot').forEach(d=>d.classList.remove('active'));
+  document.getElementById('map-status').textContent='SELECT A ZONE OR LOCATION';
 }
-
-// ─── MAP ZONE SELECT
-let currentZone = null;
-function selectZone(zone) {
-  // clear zone highlights
-  document.querySelectorAll('.zone').forEach(z => z.classList.remove('active'));
-  document.getElementById('zone-' + zone).classList.add('active');
-
-  // show panel
-  document.getElementById('panel-default').style.display = 'none';
-  document.getElementById('panel-88') && (document.getElementById('panel-88').style.display = 'none');
-  document.getElementById('panel-core') && (document.getElementById('panel-core').style.display = 'none');
-  const panel = document.getElementById('panel-' + zone);
-  if (panel) { panel.style.display = 'flex'; }
-  currentZone = zone;
-  closeDetail();
+function resetPanel(){
+  document.getElementById('panel-default').style.display='flex';
+  ['panel-88','panel-core'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
 }
-
-function selectLoc(id) {
-  // determine zone from id
-  const s88 = ['black','synapse'];
-  const zone = s88.includes(id) ? '88' : 'core';
+function selectZone(zone){
+  document.querySelectorAll('.zone').forEach(z=>z.classList.remove('active'));
+  const zEl=document.getElementById('zone-'+zone);
+  if(zEl)zEl.classList.add('active');
+  resetPanel();
+  closeDetail(null,true);
+  const panel=document.getElementById('panel-'+zone);
+  if(panel)panel.style.display='flex';
+  document.getElementById('map-status').textContent=(zone==='88'?'SECTOR 88':'THE CORE')+' // SELECTED';
+}
+function selectLoc(id){
+  const s88=['black','synapse'];
+  const zone=s88.includes(id)?'88':'core';
   selectZone(zone);
-  setTimeout(() => openDetail(id), 100);
+  document.querySelectorAll('.loc-dot').forEach(d=>d.classList.remove('active'));
+  const dot=document.getElementById('dot-'+id);
+  if(dot)dot.classList.add('active');
+  document.querySelectorAll('.loc-item').forEach(i=>i.classList.remove('selected'));
+  const li=document.getElementById('li-'+id);
+  if(li)li.classList.add('selected');
+  setTimeout(()=>openDetail(id),80);
+}
+function openDetail(id){
+  document.querySelectorAll('.loc-detail').forEach(d=>d.classList.remove('open'));
+  const d=document.getElementById('detail-'+id);
+  if(d)d.classList.add('open');
+}
+// closeDetail: pass zone to keep zone panel visible, or null+reset=true to fully reset
+function closeDetail(zone, reset){
+  document.querySelectorAll('.loc-detail').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.loc-dot').forEach(d=>d.classList.remove('active'));
+  document.querySelectorAll('.loc-item').forEach(i=>i.classList.remove('selected'));
+  if(reset) return;
+  // stay on zone panel — nothing extra needed
 }
 
-// ─── DETAIL PANEL
-function openDetail(id) {
-  document.querySelectorAll('.loc-detail').forEach(d => d.classList.remove('open'));
-  const d = document.getElementById('detail-' + id);
-  if (d) d.classList.add('open');
-}
-function closeDetail() {
-  document.querySelectorAll('.loc-detail').forEach(d => d.classList.remove('open'));
-}
-
-// ─── DIVE STAGES
-function showStage(n, btn) {
-  document.querySelectorAll('.stage-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.stage-content').forEach(c => c.classList.remove('active'));
+// DIVE
+function showStage(n,btn){
+  document.querySelectorAll('.stage-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.stage-content').forEach(c=>c.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('stage-' + n).classList.add('active');
+  document.getElementById('stage-'+n).classList.add('active');
 }
 
-// ─── OPS POPUP DATA
-const opsData = {
-  modify: {
-    bar: 'OPS_MODULE // 기억 수정',
-    title: '기억 수정 (Memory Modification)',
-    desc: '2단계 공명 이후 활성화됩니다. 딜러는 기억 속의 물리 법칙을 비틀어 환경 자체를 조작할 수 있습니다.',
-    steps: [
-      { n:'01', t:'공명 2단계 달성 후 진입 가능.' },
-      { n:'02', t:'기억 속 물리 제약을 무력화 — 닫힌 문을 열거나, 잠긴 서랍을 열거나, 시간의 흐름을 조작합니다.' },
-      { n:'03', t:'기억 주체는 이상을 감지할 수 있으며 기억 노이즈가 급증합니다.' },
-    ],
-    warn: '⚠ 기억 주체와 딜러의 자아가 섞일 위험이 큽니다. 장시간 수정 시 딜러의 정체성이 기억 속에 잠식될 수 있습니다.'
-  },
-  extract: {
-    bar: 'OPS_MODULE // 기억 추출',
-    title: '기억 추출 (Memory Extraction)',
-    desc: '2단계 공명 이후 M-칩으로 기억을 물리적으로 추출합니다. 추출된 기억은 뇌에서 영원히 사라지며 되돌릴 수 없습니다.',
-    steps: [
-      { n:'01', t:'공명 2단계 달성 후 대상 기억을 지정합니다.' },
-      { n:'02', t:'M-칩을 통해 뇌에서 기억을 분리 · 저장합니다.' },
-      { n:'03', t:'추출 완료. 해당 기억은 기억 주체의 뇌에서 영구 삭제됩니다.' },
-    ],
-    warn: '⚠ 비가역적 작전. M-칩은 파괴 불가능하므로 기억 자체는 칩에 물리적으로 존재하지만 주체의 뇌로 복원은 불가합니다.'
-  },
-  insert: {
-    bar: 'OPS_MODULE // 기억 삽입 / 조립',
-    title: '기억 삽입 · 조립 (Insertion & Assembly)',
-    desc: '2단계 공명 이후 M-칩의 기억을 대상 뇌에 삽입하거나, 여러 기억 조각을 이어붙여 하나의 가짜 자아를 창조합니다.',
-    steps: [
-      { n:'01', t:'삽입할 M-칩 기억을 선택합니다.' },
-      { n:'02', t:'단순 삽입: 하나의 기억을 대상에게 이식합니다.' },
-      { n:'03', t:'기억 조립: 복수의 기억 조각을 연결하여 완전히 다른 인생 경험을 구성합니다. 이를 통해 \'가짜 자아\'가 탄생합니다.' },
-    ],
-    warn: '⚠ 조립된 기억이 많을수록 대상의 정체성이 붕괴할 위험이 높습니다. 비공식 딜러들이 이 기술로 새 신원을 판매합니다.'
-  }
+// OPS
+const opsData={
+  modify:{bar:'OPS_MODULE // 기억 수정',title:'기억 수정 (Memory Modification)',desc:'2단계 공명 이후 활성화됩니다. 딜러는 기억 속의 물리 법칙을 비틀어 환경 자체를 조작할 수 있습니다.',steps:[{n:'01',t:'공명 2단계 달성 후 진입 가능.'},{n:'02',t:'기억 속 물리 제약을 무력화 — 닫힌 문을 열거나, 잠긴 서랍을 열거나, 시간의 흐름을 조작합니다.'},{n:'03',t:'기억 주체는 이상을 감지할 수 있으며 기억 노이즈가 급증합니다.'}],warn:'⚠ 기억 주체와 딜러의 자아가 섞일 위험이 큽니다. 장시간 수정 시 딜러의 정체성이 기억 속에 잠식될 수 있습니다.'},
+  extract:{bar:'OPS_MODULE // 기억 추출',title:'기억 추출 (Memory Extraction)',desc:'2단계 공명 이후 M-칩으로 기억을 물리적으로 추출합니다. 추출된 기억은 뇌에서 영원히 사라지며 되돌릴 수 없습니다.',steps:[{n:'01',t:'공명 2단계 달성 후 대상 기억을 지정합니다.'},{n:'02',t:'M-칩을 통해 뇌에서 기억을 분리·저장합니다.'},{n:'03',t:'추출 완료. 해당 기억은 기억 주체의 뇌에서 영구 삭제됩니다.'}],warn:'⚠ 비가역적 작전. M-칩은 파괴 불가능하므로 기억 자체는 칩에 물리적으로 존재하지만 주체의 뇌로 복원은 불가합니다.'},
+  insert:{bar:'OPS_MODULE // 기억 삽입 / 조립',title:'기억 삽입·조립 (Insertion & Assembly)',desc:'2단계 공명 이후 M-칩의 기억을 대상 뇌에 삽입하거나, 여러 기억 조각을 이어붙여 하나의 가짜 자아를 창조합니다.',steps:[{n:'01',t:'삽입할 M-칩 기억을 선택합니다.'},{n:'02',t:'단순 삽입: 하나의 기억을 대상에게 이식합니다.'},{n:'03',t:'기억 조립: 복수의 기억 조각을 연결하여 완전히 다른 인생 경험을 구성합니다. 이를 통해 \'가짜 자아\'가 탄생합니다.'}],warn:'⚠ 조립된 기억이 많을수록 대상의 정체성이 붕괴할 위험이 높습니다. 비공식 딜러들이 이 기술로 새 신원을 판매합니다.'}
 };
-
-function openOps(id) {
-  const d = opsData[id];
-  document.getElementById('popup-bar-title').textContent = d.bar;
-  document.getElementById('popup-body').innerHTML = `
-    <div class="ops-popup-title">${d.title}</div>
-    <p class="ops-popup-desc">${d.desc}</p>
-    <div class="ops-popup-steps">
-      ${d.steps.map(s=>`
-        <div class="ops-popup-step">
-          <span class="step-num">${s.n}</span>
-          <span class="step-text">${s.t}</span>
-        </div>
-      `).join('')}
-    </div>
-    <div class="ops-popup-alert">${d.warn}</div>
-  `;
+function openOps(id){
+  const d=opsData[id];
+  document.getElementById('popup-bar-title').textContent=d.bar;
+  document.getElementById('popup-body').innerHTML=`<div class="ops-popup-title">${d.title}</div><p class="ops-popup-desc">${d.desc}</p><div class="ops-popup-steps">${d.steps.map(s=>`<div class="ops-popup-step"><span class="step-num">${s.n}</span><span class="step-text">${s.t}</span></div>`).join('')}</div><div class="ops-popup-alert">${d.warn}</div>`;
   document.getElementById('ops-overlay').classList.add('open');
 }
-function closeOps() { document.getElementById('ops-overlay').classList.remove('open'); }
-function closeOpsIfBg(e) { if(e.target === document.getElementById('ops-overlay')) closeOps(); }
+function closeOps(){document.getElementById('ops-overlay').classList.remove('open')}
+function closeOpsIfBg(e){if(e.target===document.getElementById('ops-overlay'))closeOps()}
 </script>
 </body>
 </html>
